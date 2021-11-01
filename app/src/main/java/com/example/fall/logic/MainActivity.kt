@@ -1,11 +1,8 @@
-package com.example.fall
+package com.example.fall.logic
 
 import android.app.Activity
 import android.opengl.GLSurfaceView
 import android.os.Bundle
-import android.view.MotionEvent
-import java.util.*
-import kotlin.random.Random
 
 class MainActivity : Activity() {
 

@@ -1,4 +1,4 @@
-package com.example.fall
+package com.example.fall.logic
 
 import android.opengl.GLES31
 import java.nio.ByteBuffer

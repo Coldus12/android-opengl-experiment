@@ -1,5 +1,6 @@
-package com.example.fall
+package com.example.fall.logic
 
+import android.graphics.PointF
 import android.opengl.GLES30
 import android.util.Log
 import java.nio.ByteBuffer
@@ -9,11 +10,25 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Rectangle(centerX: Float, centerY: Float, radius: Float) {
+class Rectangle(centerX: Float, centerY: Float, radius: Float, nr: Int) {
+    var center: PointF = PointF(centerX, centerY)
+    var nrOfVertices = nr
+    var r = radius
+
+    companion object {
+        var mat = floatArrayOf(1f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f,
+            0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 1f)
+    }
+
     private val vertexShaderCode =
         "attribute vec2 vPosition;" +
+                "uniform vec2 translation;" +
+                "uniform float radius;" +
+                "uniform mat4 MVPMatrix;" +
                 "void main() {" +
-                "  gl_Position = vec4(vPosition.x, vPosition.y, 0, 1);" +
+                "  gl_Position = MVPMatrix * vec4(radius * vPosition.x + translation.x, radius * vPosition.y + translation.y, 0, 1);" +
                 "}"
 
     private val fragmentShaderCode =
@@ -50,38 +65,12 @@ class Rectangle(centerX: Float, centerY: Float, radius: Float) {
         color[3] = a
     }
 
-    fun changePosition(centerX: Float, centerY: Float, radius: Float, nr: Int) {
-        //var nr = 4
-
-        lFloat.clear()
-
-        for (i in 0..nr) {
-            lFloat.add(centerX + radius * cos(2*PI/nr * i).toFloat())
-            lFloat.add(centerY + radius * sin(2*PI/nr * i).toFloat())
-
-            //Log.i("[LOOKOUT]","${lFloat[2*i]} and ${lFloat[2*i+1]}")
-        }
-
-        vertexBuffer =
-            ByteBuffer.allocateDirect(lFloat.size * FLOAT_SIZE).run {
-                order(ByteOrder.nativeOrder())
-
-                asFloatBuffer().apply {
-                    put(lFloat.toFloatArray())
-                    //put(rectCoords)
-                    position(0)
-                }
-            }
-    }
-
     private var mProgram: Int
 
     init {
-        var nr = 4
-
         for (i in 0..nr) {
-            lFloat.add(centerX + radius * cos(2*PI/nr * i).toFloat())
-            lFloat.add(centerY + radius * sin(2*PI/nr * i).toFloat())
+            lFloat.add(cos(2*PI/nr * i).toFloat())
+            lFloat.add(sin(2*PI/nr * i).toFloat())
 
             //Log.i("[LOOKOUT]","${lFloat[2*i]} and ${lFloat[2*i+1]}")
         }
@@ -134,6 +123,18 @@ class Rectangle(centerX: Float, centerY: Float, radius: Float) {
 
                 // Set color for drawing the triangle
                 GLES30.glUniform4fv(colorHandle, 1, color, 0)
+            }
+
+            GLES30.glGetUniformLocation(mProgram, "translation").also { tran ->
+                GLES30.glUniform2f(tran, center.x, center.y)
+            }
+
+            GLES30.glGetUniformLocation(mProgram, "radius").also { rad ->
+                GLES30.glUniform1f(rad, r)
+            }
+
+            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { ratio ->
+                GLES30.glUniformMatrix4fv(ratio, 1, false, mat, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
