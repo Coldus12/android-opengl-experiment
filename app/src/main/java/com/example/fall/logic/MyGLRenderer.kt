@@ -1,8 +1,11 @@
 package com.example.fall.logic
 
+import android.graphics.Point
 import android.graphics.PointF
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
+import com.example.fall.data.Playah
+import com.example.fall.data.PlayerStates
 import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -12,54 +15,44 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
     //private lateinit var mTriangle: Triangle
     //lateinit var rect: Rectangle
-    private var circleList = ArrayList<Rectangle>()
-    private var random = Random(Calendar.getInstance().timeInMillis)
-    private var draw = true
-    private var projectionMatrix = FloatArray(16)
+    private lateinit var renderer: PlayerRenderer
+    private lateinit var data: Playah
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
 
-        for (i in 0..10) {
-            circleList.add(Rectangle(2*random.nextFloat() - 1,random.nextFloat()*2 - 1, random.nextFloat()*2-1, random.nextInt(3, 15)))
-            circleList[i].changeColor(random.nextFloat(), random.nextFloat(),random.nextFloat(), 1.0f)
-        }
-    }
+        data = Playah(
+            PointF(0.0f,0.0f),
+            "no_model",
+            PlayerStates.standing,
+            100,
+            Point(1,0)
+        )
 
-    fun reGenCircles() {
-        draw = false
-        //circleList.clear()
-        for (i in 0 until circleList.size) {
-            circleList[i].center = PointF(random.nextFloat()*2-1, random.nextFloat()*2-1)
-            circleList[i].changeColor(random.nextFloat(), random.nextFloat(),random.nextFloat(), 1.0f)
-            circleList[i].r = random.nextFloat()
-        }
-
-        draw = true
+        renderer = PlayerRenderer()
     }
 
     override fun onDrawFrame(unused: GL10) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
+        renderer.changeData(data)
 
-        if (draw) {
-            for (i in 0 until circleList.size) {
-                circleList[i].draw()
-            }
-        }
+        renderer.draw()
+    }
+
+    fun changePos(x: Float, y: Float) {
+        data.position.x = x
+        data.position.y = y
+        renderer.changeData(data)
     }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES30.glViewport(0, 0, width, height)
 
         val ratio = width.toFloat() / height.toFloat()
+        PlayerRenderer.screenRatio = ratio
+        renderer.changeData(data)
 
-        var mat = floatArrayOf( 1/ratio * 1f, 0f, 0f, 0f,
-                                0f, 1f, 0f, 0f,
-                                0f, 0f, 1f, 0f,
-                                0f, 0f, 0f, 1f)
-
-        //Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
-        Rectangle.mat = mat
+        renderer.draw()
     }
 }
