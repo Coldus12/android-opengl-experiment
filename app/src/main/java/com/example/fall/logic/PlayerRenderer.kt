@@ -17,17 +17,17 @@ class PlayerRenderer {
         "attribute vec2 vPosition;" +
                 "uniform mat4 MVPMatrix;" +
                 "void main() {" +
-                "   gl_Position = vec4(vPosition.x, vPosition.y, 0, 1) * MVPMatrix;" +
+                "   gl_Position = MVPMatrix * vec4(vPosition.x, vPosition.y, 0, 1);" +
                 "}"
 
     private val fragmentShaderCode =
-        "precision mediump float;" +
+        "precision highp float;" +
                 "uniform vec4 vColor;" +
                 "void main() {" +
                 "  gl_FragColor = vColor;" +
                 "}"
 
-    private val color = floatArrayOf(0f, 0.5f, 1.0f, 1.0f)
+    private val color = floatArrayOf(0f, 0.5f, 0.0f, 1.0f)
     private val FLOAT_SIZE = 4
     private val COORDS_PER_VERTEX = 2
     private var mColorHandle: Int = 0
@@ -40,6 +40,10 @@ class PlayerRenderer {
 
     private var vertexBuffer: FloatBuffer
 
+    private lateinit var rotMat: Mat4
+    private lateinit var translate: Mat4
+    private lateinit var ratio: Mat4
+
     private var nr = 4
     var mat = floatArrayOf(1f, 0f, 0f, 0f,
         0f, 1f, 0f, 0f,
@@ -47,7 +51,14 @@ class PlayerRenderer {
         0f, 0f, 0f, 1f)
 
     companion object {
-        public var screenRatio: Float = 1f
+        var screenRatio: Float = 1f
+    }
+
+    fun rotate(angle: Float) {
+        rotMat = Mat4(floatArrayOf(     cos(angle), sin(angle), 0.0f, 0.0f,
+                                        -sin(angle), cos(angle), 0.0f, 0.0f,
+                                        0.0f, 0.0f, 0.0f, 0.0f,
+                                        0.0f, 0.0f, 0.0f, 1.0f))
     }
 
     fun changeData(data: Playah) {
@@ -56,14 +67,12 @@ class PlayerRenderer {
                             0f, 0f, 1f, 0f,
                             0f, 0f, 0f, 1f)
 
-        val mat2 = Mat4(floatArrayOf(   1.0f, 0.0f, 0.0f, data.position.x,
-                                        0.0f, 1.0f, 0.0f, data.position.y,
+        ratio = Mat4(mat)
+
+        translate = Mat4(floatArrayOf(  1.0f, 0.0f, 0.0f, 0.0f,
+                                        0.0f, 1.0f, 0.0f, 0.0f,
                                         0.0f, 0.0f, 1.0f, 0.0f,
-                                        0.0f, 0.0f, 0.0f, 1.0f))
-
-        val mat1 = Mat4(mat)
-
-        mat = mat2.multiplyBy(mat1).getArray()
+                                        data.position.x, data.position.y, 0.0f, 1.0f))
     }
 
     fun loadShader(type: Int, shaderCode: String): Int {
@@ -83,11 +92,15 @@ class PlayerRenderer {
     private var mProgram: Int
 
     init {
+        rotMat = Mat4(floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f))
+
+
         for (i in 0..nr) {
             lFloat.add(cos(2* PI /nr * i).toFloat())
             lFloat.add(sin(2* PI /nr * i).toFloat())
-
-            //Log.i("[LOOKOUT]","${lFloat[2*i]} and ${lFloat[2*i+1]}")
         }
 
         vertexBuffer =
@@ -96,7 +109,6 @@ class PlayerRenderer {
 
                 asFloatBuffer().apply {
                     put(lFloat.toFloatArray())
-                    //put(rectCoords)
                     position(0)
                 }
             }
@@ -110,12 +122,7 @@ class PlayerRenderer {
             GLES30.glAttachShader(it, vertexShader)
             GLES30.glAttachShader(it, fragmentShader)
             GLES30.glLinkProgram(it)
-
-            Log.d("[LOOG]", "FUUUUUUUUUUUU $it")
-            Log.i("[LOOG]", GLES30.glGetProgramInfoLog(it))
-            Log.d("[LOOG]", "done")
         }
-        Log.d("[LOOG]", "LINKING COMPLETE $mProgram")
     }
 
     fun draw() {
@@ -124,7 +131,6 @@ class PlayerRenderer {
         vertexCount = lFloat.size / COORDS_PER_VERTEX
 
         mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
-            Log.i("[LOG]","OH MY FUCKING GOD $it $mProgram")
             GLES30.glEnableVertexAttribArray(it)
 
             GLES30.glVertexAttribPointer(
@@ -142,8 +148,11 @@ class PlayerRenderer {
                 GLES30.glUniform4fv(colorHandle, 1, color, 0)
             }
 
-            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { ratio ->
-                GLES30.glUniformMatrix4fv(ratio, 1, false, mat, 0)
+            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { mvp ->
+                val tr = rotMat.multiplyBy(translate)
+                val trs = tr.multiplyBy(ratio).getData()
+
+                GLES30.glUniformMatrix4fv(mvp, 1, false, trs, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)

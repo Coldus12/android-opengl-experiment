@@ -46,6 +46,15 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         renderer.changeData(data)
     }
 
+    fun rotate(angle: Float) {
+        renderer.rotate(angle)
+    }
+
+    fun deltaPos(x: Float, y: Float) {
+        data.position.x += x
+        data.position.y += y
+    }
+
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES30.glViewport(0, 0, width, height)
 
