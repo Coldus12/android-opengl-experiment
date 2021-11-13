@@ -1,10 +1,12 @@
 package com.example.fall.logic
 
+import android.graphics.Color
 import android.graphics.PointF
 import android.opengl.GLES30
 import android.util.Log
 import com.example.fall.data.Playah
 import com.example.fall.math.Mat4
+import com.example.fall.math.Vec4
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -43,6 +45,7 @@ class PlayerRenderer {
     private lateinit var rotMat: Mat4
     private lateinit var translate: Mat4
     private lateinit var ratio: Mat4
+    private lateinit var vp: Mat4
 
     private var nr = 4
     var mat = floatArrayOf(1f, 0f, 0f, 0f,
@@ -50,8 +53,8 @@ class PlayerRenderer {
         0f, 0f, 1f, 0f,
         0f, 0f, 0f, 1f)
 
-    companion object {
-        var screenRatio: Float = 1f
+    fun setCamera(vp: Mat4) {
+        this.vp = vp
     }
 
     fun rotate(angle: Float) {
@@ -62,8 +65,8 @@ class PlayerRenderer {
     }
 
     fun changeData(data: Playah) {
-        mat = floatArrayOf( 1/screenRatio * 1.0f / 3.0f, 0f, 0f, 0f,
-                            0f, 1.0f / 3.0f, 0f, 0f,
+        mat = floatArrayOf( 1.0f / 10.0f, 0f, 0f, 0f,
+                            0f, 1.0f / 10.0f, 0f, 0f,
                             0f, 0f, 1f, 0f,
                             0f, 0f, 0f, 1f)
 
@@ -125,6 +128,85 @@ class PlayerRenderer {
         }
     }
 
+    fun draw(data: Playah, color: FloatArray) {
+        GLES30.glUseProgram(mProgram)
+
+        vertexCount = lFloat.size / COORDS_PER_VERTEX
+
+        mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
+            GLES30.glEnableVertexAttribArray(it)
+
+            GLES30.glVertexAttribPointer(
+                it,
+                COORDS_PER_VERTEX,
+                GLES30.GL_FLOAT,
+                false,
+                vertexStride,
+                vertexBuffer
+            )
+
+            mColorHandle = GLES30.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
+                // Set color for drawing the triangle
+                GLES30.glUniform4fv(colorHandle, 1, color, 0)
+            }
+
+            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
+                val r = Mat4.rotMat(0f);
+                val t = Mat4.translateMat(Vec4(floatArrayOf(data.position.x, data.position.y, 0f, 1f)))
+                val s = Mat4.scaleMat(Vec4(floatArrayOf(0.05f, 0.05f, 0f, 1f)))
+
+                val tr = t.multiplyBy(r)
+                val m = tr.multiplyBy(s)
+                val mvp = m.multiplyBy(vp).getData()
+
+                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
+            }
+
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
+            GLES30.glDisableVertexAttribArray(it)
+        }
+    }
+
+    fun draw(data: Playah) {
+        GLES30.glUseProgram(mProgram)
+
+        vertexCount = lFloat.size / COORDS_PER_VERTEX
+
+        mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
+            GLES30.glEnableVertexAttribArray(it)
+
+            GLES30.glVertexAttribPointer(
+                it,
+                COORDS_PER_VERTEX,
+                GLES30.GL_FLOAT,
+                false,
+                vertexStride,
+                vertexBuffer
+            )
+
+            mColorHandle = GLES30.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
+
+                // Set color for drawing the triangle
+                GLES30.glUniform4fv(colorHandle, 1, color, 0)
+            }
+
+            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
+                val r = Mat4.rotMat(0f);
+                val t = Mat4.translateMat(Vec4(floatArrayOf(data.position.x, data.position.y, 0f, 1f)))
+                val s = Mat4.scaleMat(Vec4(floatArrayOf(0.05f, 0.05f, 0f, 1f)))
+
+                val tr = t.multiplyBy(r)
+                val m = tr.multiplyBy(s)
+                val mvp = m.multiplyBy(vp).getData()
+
+                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
+            }
+
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
+            GLES30.glDisableVertexAttribArray(it)
+        }
+    }
+
     fun draw() {
         GLES30.glUseProgram(mProgram)
 
@@ -148,11 +230,12 @@ class PlayerRenderer {
                 GLES30.glUniform4fv(colorHandle, 1, color, 0)
             }
 
-            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { mvp ->
+            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
                 val tr = rotMat.multiplyBy(translate)
-                val trs = tr.multiplyBy(ratio).getData()
+                val m = tr.multiplyBy(ratio)
+                val mvp = m.multiplyBy(vp).getData()
 
-                GLES30.glUniformMatrix4fv(mvp, 1, false, trs, 0)
+                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)

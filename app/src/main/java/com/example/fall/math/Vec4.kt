@@ -1,5 +1,7 @@
 package com.example.fall.math
 
+import android.util.Log
+
 class Vec4() {
     private var data = FloatArray(4)
 
@@ -27,5 +29,9 @@ class Vec4() {
 
     fun print() {
         print("${data[0]} ${data[1]} ${data[2]} ${data[3]} \n")
+    }
+
+    fun log() {
+        Log.i("[LOOG]","${data[0]} ${data[1]} ${data[2]} ${data[3]} \n")
     }
 }

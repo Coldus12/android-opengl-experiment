@@ -35,9 +35,6 @@ class MainActivity : Activity() {
             val x = cos(rad) * (strength / 100.0) / 10.0
             val y = sin(rad) * (strength / 100.0) / 10.0
 
-            //Log.i("[LOG]","angle $angle strength $strength rad $rad x $x y $y")
-            //tv.text = "angle $angle strength $strength rad $rad x $x y $y"
-
             glView.moveDelta(x.toFloat(),y.toFloat())
         }
 

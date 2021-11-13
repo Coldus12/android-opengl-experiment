@@ -1,5 +1,8 @@
 package com.example.fall.math
 
+import kotlin.math.cos
+import kotlin.math.sin
+
 class Mat4() {
     private lateinit var row1: Vec4
     private lateinit var row2: Vec4
@@ -50,10 +53,60 @@ class Mat4() {
         return ret
     }
 
+    fun multiplyBy(vec: Vec4) : Vec4 {
+        val r1 = row1.getData()
+        val r2 = row2.getData()
+        val r3 = row3.getData()
+        val r4 = row4.getData()
+
+        val col1 = Vec4(floatArrayOf(r1[0], r2[0], r3[0], r4[0]))
+        val col2 = Vec4(floatArrayOf(r1[1], r2[1], r3[1], r4[1]))
+        val col3 = Vec4(floatArrayOf(r1[2], r2[2], r3[2], r4[2]))
+        val col4 = Vec4(floatArrayOf(r1[3], r2[3], r3[3], r4[3]))
+
+        val ret = Vec4(floatArrayOf(vec.dot(col1), vec.dot(col2), vec.dot(col3), vec.dot(col4)))
+
+        return ret
+    }
+
     fun print() {
         row1.print()
         row2.print()
         row3.print()
         row4.print()
+    }
+
+    fun log() {
+        row1.log()
+        row2.log()
+        row3.log()
+        row4.log()
+    }
+
+    companion object {
+        fun translateMat(v: Vec4) : Mat4 {
+            val data = v.getData()
+
+            return Mat4(floatArrayOf(   1.0f, 0.0f, 0.0f, 0.0f,
+                                        0.0f, 1.0f, 0.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f, 0.0f,
+                                        data[0], data[1], data[2], data[3]))
+        }
+
+        fun scaleMat(v: Vec4) : Mat4 {
+            val data = v.getData()
+
+            return Mat4(floatArrayOf(   data[0] * 1.0f, 0.0f, 0.0f, 0.0f,
+                                        0.0f, data[1] * 1.0f, 0.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f, 0.0f,
+                                        0.0f, 0.0f, 0.0f, 1.0f))
+        }
+
+        fun rotMat(rad: Float) : Mat4 {
+            return Mat4(floatArrayOf(   cos(rad), -sin(rad), 0.0f, 0.0f,
+                                        sin(rad), cos(rad), 0.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f, 0.0f,
+                                        0.0f, 0.0f, 0.0f, 1.0f))
+        }
     }
 }
