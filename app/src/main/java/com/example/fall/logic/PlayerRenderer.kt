@@ -19,7 +19,7 @@ class PlayerRenderer {
         "attribute vec2 vPosition;" +
                 "uniform mat4 MVPMatrix;" +
                 "void main() {" +
-                "   gl_Position = MVPMatrix * vec4(vPosition.x, vPosition.y, 0, 1);" +
+                "   gl_Position = vec4(vPosition.x, vPosition.y, 0, 1) * MVPMatrix;" +
                 "}"
 
     private val fragmentShaderCode =
@@ -29,7 +29,7 @@ class PlayerRenderer {
                 "  gl_FragColor = vColor;" +
                 "}"
 
-    private val color = floatArrayOf(0f, 0.5f, 0.0f, 1.0f)
+    private val color = floatArrayOf(0f, 0.5f, 1.0f, 1.0f)
     private val FLOAT_SIZE = 4
     private val COORDS_PER_VERTEX = 2
     private var mColorHandle: Int = 0
@@ -159,7 +159,7 @@ class PlayerRenderer {
                 val m = tr.multiplyBy(s)
                 val mvp = m.multiplyBy(vp).getData()
 
-                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
+                GLES30.glUniformMatrix4fv(it2, 1, true, mvp, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
@@ -199,7 +199,7 @@ class PlayerRenderer {
                 val m = tr.multiplyBy(s)
                 val mvp = m.multiplyBy(vp).getData()
 
-                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
+                GLES30.glUniformMatrix4fv(it2, 1, true, mvp, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
@@ -235,7 +235,7 @@ class PlayerRenderer {
                 val m = tr.multiplyBy(ratio)
                 val mvp = m.multiplyBy(vp).getData()
 
-                GLES30.glUniformMatrix4fv(it2, 1, false, mvp, 0)
+                GLES30.glUniformMatrix4fv(it2, 1, true, mvp, 0)
             }
 
             GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)

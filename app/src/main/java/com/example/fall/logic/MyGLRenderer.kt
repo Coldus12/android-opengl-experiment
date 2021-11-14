@@ -59,7 +59,7 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         renderer.setCamera(vp)
         renderer.changeData(data)
         renderer.draw()
-        renderer.draw(square, floatArrayOf(1f, 0f, 0.5f, 1f))
+        renderer.draw(square, floatArrayOf(0.5f, 0f, 0.5f, 1f))
     }
 
     fun changePos(x: Float, y: Float) {
