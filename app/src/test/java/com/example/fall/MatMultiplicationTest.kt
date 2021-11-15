@@ -1,5 +1,7 @@
 package com.example.fall
 
+import android.graphics.PointF
+import com.example.fall.logic.Camera
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import junit.framework.Assert.assertEquals
@@ -72,7 +74,7 @@ class MatMultiplicationTest {
         val tr = t.multiplyBy(r)
         val m = tr.multiplyBy(s)
 
-        val vp = Mat4.translateMat(Vec4(floatArrayOf(-40f, 40f, 0f, 1f)))
+        val vp = Mat4.translateMat(Vec4(floatArrayOf(40f, -40f, 0f, 1f)))
         val mvp = m.multiplyBy(vp)
 
         val one = Vec4(floatArrayOf(0f, 0f, 0f, 1f))
@@ -85,17 +87,53 @@ class MatMultiplicationTest {
 
         // Translate and rotate test
         modelV = tr.multiplyBy(one)
-        assertEquals(12f, round(modelV.getData()[0]))
-        assertEquals(-14f, round(modelV.getData()[1]))
+        assertEquals(-12f, round(modelV.getData()[0]))
+        assertEquals(14f, round(modelV.getData()[1]))
 
         // Translate, rotate, scale test
         modelV = m.multiplyBy(one)
-        assertEquals(36f, round(modelV.getData()[0]))
-        assertEquals(-42f, round(modelV.getData()[1]))
+        assertEquals(-36f, round(modelV.getData()[0]))
+        assertEquals(42f, round(modelV.getData()[1]))
 
         // Model (t,r,s) + view test
-        assertEquals(-4f, round(res.getData()[0]))
-        assertEquals(-2f, round(res.getData()[1]))
+        assertEquals(4f, round(res.getData()[0]))
+        assertEquals(2f, round(res.getData()[1]))
+    }
+
+    @Test
+    fun matMultiplicationWithCamera() {
+        val ogVec = Vec4(floatArrayOf(1f, 0f, 0f, 1f))
+
+        val t = Mat4.translateMat(Vec4(floatArrayOf(10f, 10f, 0f, 1f)))
+        val r = Mat4.rotMat((PI/2f).toFloat())
+        val s = Mat4.scaleMat(Vec4(floatArrayOf(3f, 3f, 0f, 1f)))
+
+        val sr = s.multiplyBy(r)
+        val m = sr.multiplyBy(t)
+
+        val cam = Camera(10f,10f, 0f,0f)
+
+        val mvp = m.multiplyBy(cam.getV())
+        val res = mvp.multiplyBy(ogVec)
+
+        // Simple translate test
+        var modelV = s.multiplyBy(ogVec)
+        assertEquals(3f, round(modelV.getData()[0]))
+        assertEquals(0f, round(modelV.getData()[1]))
+
+        // Translate and rotate test
+        modelV = sr.multiplyBy(ogVec)
+        assertEquals(-0f, round(modelV.getData()[0]))
+        assertEquals(3f, round(modelV.getData()[1]))
+
+        // Translate, rotate, scale test
+        modelV = m.multiplyBy(ogVec)
+        assertEquals(10f, round(modelV.getData()[0]))
+        assertEquals(13f, round(modelV.getData()[1]))
+
+        // Model (t,r,s) + view test
+        assertEquals(-0f, round(res.getData()[0]))
+        assertEquals(3f, round(res.getData()[1]))
     }
 
     @Test

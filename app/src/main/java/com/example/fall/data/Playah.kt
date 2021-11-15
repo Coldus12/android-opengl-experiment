@@ -1,6 +1,5 @@
 package com.example.fall.data
 
-import android.graphics.Point
 import android.graphics.PointF
 
 data class Playah(
@@ -8,7 +7,7 @@ data class Playah(
     var model: String,
     var currentState: PlayerStates,
     var health: Int,
-    var lookDirection: Point
+    var lookDirection: Float
 )
 
 enum class PlayerStates {

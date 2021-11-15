@@ -1,49 +1,50 @@
 package com.example.fall.logic
 
-import android.graphics.Point
-import android.graphics.PointF
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 
-class Camera(private var center: PointF, private var size: PointF) {
+class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
 
-    private var cVec = Vec4(floatArrayOf(center.x, center.y, 0f, 1f))
-    private var minusCVec = Vec4(floatArrayOf(-center.x, -center.y, 0f, 1f))
-    private var sVec = Vec4(floatArrayOf(2f/size.x, 2f/size.y, 0f, 1f))
-    private var sVecInv = Vec4(floatArrayOf(size.x/2f, size.y/2f, 0f, 1f))
+    private var centerX: Float
+    private var centerY: Float
+    private var sizeWidth: Float
+    private var sizeHeight: Float
 
-    fun setPos(v: PointF) {
-        center = v
-        cVec = Vec4(floatArrayOf(center.x, center.y, 0f, 1f))
-        minusCVec = Vec4(floatArrayOf(-center.x, -center.y, 0f, 1f))
+    init {
+        centerX = posX
+        centerY = posY
+        sizeWidth = cWidth
+        sizeHeight = cHeight
+    }
+
+    fun setPos(posX: Float, posY: Float) {
+        centerX = posX
+        centerY = posY
     }
 
     fun getV() : Mat4 {
-        return Mat4.translateMat(minusCVec)
+        return Mat4.translateMat(Vec4(floatArrayOf(-centerX, -centerY, 0f, 1f)))
     }
 
     fun getP() : Mat4 {
-        return Mat4.scaleMat(sVec)
+        return Mat4.scaleMat(Vec4(floatArrayOf(2f/sizeWidth, 2f/sizeHeight, 0f, 1f)))
     }
 
     fun getVinv() : Mat4 {
-        return Mat4.translateMat(cVec)
+        return Mat4.translateMat(Vec4(floatArrayOf(centerX, centerY, 0f, 1f)))
     }
 
     fun getPinv() : Mat4 {
-        return Mat4.scaleMat(sVecInv)
+        return Mat4.scaleMat(Vec4(floatArrayOf(sizeWidth/2f, sizeHeight/2f, 0f, 1f)))
     }
 
     fun zoom(s: Float) {
-        size.x *= s
-        size.y *= s
+        sizeWidth *= s
+        sizeHeight *= s
     }
 
-    fun pan(v: PointF) {
-        center.x += v.x
-        center.y += v.y
-
-        cVec = Vec4(floatArrayOf(center.x, center.y, 0f, 1f))
-        minusCVec = Vec4(floatArrayOf(-center.x, -center.y, 0f, 1f))
+    fun pan(dX: Float, dY: Float) {
+        centerX += dX
+        centerY += dY
     }
 }

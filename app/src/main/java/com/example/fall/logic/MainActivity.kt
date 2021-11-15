@@ -19,10 +19,6 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-        // Create a GLSurfaceView instance and set it
-        // as the ContentView for this Activity.
-        //gLView = MyGLSurfaceView(this)
         setContentView(binding.root)
 
         val glView = binding.glView
@@ -41,7 +37,7 @@ class MainActivity : Activity() {
         jTurn.setOnMoveListener {angle: Int, strength: Int ->
             val rad = PI/180.0 * angle
 
-            Log.i("[LOG]","Rad $rad")
+            //Log.i("[LOG]","Rad $rad")
             if (strength > 50)
                 glView.rot(rad.toFloat())
         }

@@ -53,7 +53,7 @@ class Mat4() {
         return ret
     }
 
-    fun multiplyBy(vec: Vec4) : Vec4 {
+    fun multiplyBy(vec: Vec4): Vec4 {
         val r1 = row1.getData()
         val r2 = row2.getData()
         val r3 = row3.getData()
@@ -64,9 +64,7 @@ class Mat4() {
         val col3 = Vec4(floatArrayOf(r1[2], r2[2], r3[2], r4[2]))
         val col4 = Vec4(floatArrayOf(r1[3], r2[3], r3[3], r4[3]))
 
-        val ret = Vec4(floatArrayOf(vec.dot(col1), vec.dot(col2), vec.dot(col3), vec.dot(col4)))
-
-        return ret
+        return Vec4(floatArrayOf(vec.dot(col1), vec.dot(col2), vec.dot(col3), vec.dot(col4)))
     }
 
     fun print() {
@@ -90,7 +88,7 @@ class Mat4() {
             return Mat4(floatArrayOf(   1.0f, 0.0f, 0.0f, 0.0f,
                                         0.0f, 1.0f, 0.0f, 0.0f,
                                         0.0f, 0.0f, 1.0f, 0.0f,
-                                        data[0], data[1], data[2], data[3]))
+                                        data[0], data[1], 0f, 1f))
         }
 
         fun scaleMat(v: Vec4) : Mat4 {
@@ -103,8 +101,8 @@ class Mat4() {
         }
 
         fun rotMat(rad: Float) : Mat4 {
-            return Mat4(floatArrayOf(   cos(rad), -sin(rad), 0.0f, 0.0f,
-                                        sin(rad), cos(rad), 0.0f, 0.0f,
+            return Mat4(floatArrayOf(   cos(rad), sin(rad), 0.0f, 0.0f,
+                                        -sin(rad), cos(rad), 0.0f, 0.0f,
                                         0.0f, 0.0f, 1.0f, 0.0f,
                                         0.0f, 0.0f, 0.0f, 1.0f))
         }

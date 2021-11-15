@@ -10,12 +10,11 @@ import com.example.fall.data.PlayerStates
 import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.PI
 import kotlin.random.Random
 
 class MyGLRenderer : GLSurfaceView.Renderer {
 
-    //private lateinit var mTriangle: Triangle
-    //lateinit var rect: Rectangle
     private lateinit var renderer: PlayerRenderer
     private lateinit var data: Playah
     private lateinit var square: Playah
@@ -29,65 +28,59 @@ class MyGLRenderer : GLSurfaceView.Renderer {
             "no_model",
             PlayerStates.standing,
             100,
-            Point(1,0)
+            0f
         )
 
         square = Playah(
-            PointF(1f, 1f),
+            PointF(0f, 0f),
             "no",
             PlayerStates.standing,
             100,
-            Point(1,0)
+            (PI/4).toFloat()
         )
 
         renderer = PlayerRenderer()
 
-        cam = Camera(data.position, PointF(1f,1f))
+        cam = Camera(data.position.x, data.position.y, 1f,1f)
 
-        val vp = cam.getV().multiplyBy(cam.getP())
-        renderer.setCamera(vp)
+        renderer.setViewProj(cam.getV(), cam.getP())
     }
 
     override fun onDrawFrame(unused: GL10) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
 
-        //cam.setPos(data.position)
+        cam.setPos(data.position.x, data.position.y)
 
-        val vp = cam.getV().multiplyBy(cam.getP())
-
-        renderer.setCamera(vp)
-        renderer.changeData(data)
-        renderer.draw()
+        renderer.setViewProj(cam.getV(), cam.getP())
         renderer.draw(square, floatArrayOf(0.5f, 0f, 0.5f, 1f))
+        renderer.draw(data)
     }
 
     fun changePos(x: Float, y: Float) {
         data.position.x = x
         data.position.y = y
-        renderer.changeData(data)
     }
 
     fun rotate(angle: Float) {
-        renderer.rotate(angle)
+        data.lookDirection = angle
     }
 
     fun deltaPos(x: Float, y: Float) {
         data.position.x += x
         data.position.y += y
+
+        cam.setPos(data.position.x, data.position.y)
     }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES30.glViewport(0, 0, width, height)
 
         val ratio = width.toFloat() / height.toFloat()
-        cam = Camera(data.position, PointF(ratio, 1f))
+        cam = Camera(data.position.x, data.position.y, ratio, 1f)
 
-        val vp = cam.getV().multiplyBy(cam.getP())
-
-        renderer.setCamera(vp)
-        renderer.changeData(data)
-
-        renderer.draw()
+        renderer.setViewProj(cam.getV(), cam.getP())
+        renderer.draw(square)
+        renderer.draw(data)
     }
 }
