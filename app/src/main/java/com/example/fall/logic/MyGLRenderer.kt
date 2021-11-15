@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView
 import android.util.Log
 import com.example.fall.data.Playah
 import com.example.fall.data.PlayerStates
+import com.example.fall.math.Map
 import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -16,9 +17,11 @@ import kotlin.random.Random
 class MyGLRenderer : GLSurfaceView.Renderer {
 
     private lateinit var renderer: PlayerRenderer
+    private lateinit var blockRenderer: BlockRenderer
     private lateinit var data: Playah
     private lateinit var square: Playah
     private lateinit var cam: Camera
+    private var map = Map(100,100, 0.05f)
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
@@ -40,10 +43,27 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         )
 
         renderer = PlayerRenderer()
+        blockRenderer = BlockRenderer()
 
         cam = Camera(data.position.x, data.position.y, 1f,1f)
 
         renderer.setViewProj(cam.getV(), cam.getP())
+        blockRenderer.setViewProj(cam.getV(), cam.getP())
+    }
+
+    fun rendermap() {
+        var data = map.getMap()
+        blockRenderer.setViewProj(cam.getV(), cam.getP())
+
+        val passable = floatArrayOf(1f, 0.5f, 0.5f, 1f)
+        val nope = floatArrayOf(0f, 0.5f, 0f, 1f)
+
+        for (i in data.indices) {
+            if (data[i].passable)
+                blockRenderer.draw(data[i], passable)
+            else
+                blockRenderer.draw(data[i], nope)
+        }
     }
 
     override fun onDrawFrame(unused: GL10) {
@@ -53,7 +73,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         cam.setPos(data.position.x, data.position.y)
 
         renderer.setViewProj(cam.getV(), cam.getP())
-        renderer.draw(square, floatArrayOf(0.5f, 0f, 0.5f, 1f))
+        rendermap()
+        //renderer.draw(square, floatArrayOf(0.5f, 0f, 0.5f, 1f))
         renderer.draw(data)
     }
 
@@ -80,7 +101,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         cam = Camera(data.position.x, data.position.y, ratio, 1f)
 
         renderer.setViewProj(cam.getV(), cam.getP())
-        renderer.draw(square)
+        rendermap()
+        //renderer.draw(square)
         renderer.draw(data)
     }
 }

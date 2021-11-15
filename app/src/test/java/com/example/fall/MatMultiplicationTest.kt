@@ -2,6 +2,7 @@ package com.example.fall
 
 import android.graphics.PointF
 import com.example.fall.logic.Camera
+import com.example.fall.math.Map
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import junit.framework.Assert.assertEquals
@@ -135,6 +136,12 @@ class MatMultiplicationTest {
         assertEquals(-0f, round(res.getData()[0]))
         assertEquals(3f, round(res.getData()[1]))
     }
+
+    /*@Test
+    fun fff() {
+        var map = Map(100,100)
+        assertEquals(1,0)
+    }*/
 
     @Test
     fun vecMultiplicationCorrect() {
