@@ -130,6 +130,13 @@ class Map(m: Int, n: Int, blockSize: Float = 1f) {
         else data[0]
     }
 
+    fun getBlockAt(x: Float, y: Float): Block {
+        val iX = (x / blockSize).roundToInt()
+        val iY = (y / blockSize).roundToInt()
+
+        return getBlock(iY,iX)
+    }
+
     fun printBinary() {
         for ((c, i) in binary.withIndex()) {
             if (c%width == 0)

@@ -1,14 +1,10 @@
 package com.example.fall.logic
 
 import android.app.Activity
-import android.opengl.GLSurfaceView
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fall.R
 import com.example.fall.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI

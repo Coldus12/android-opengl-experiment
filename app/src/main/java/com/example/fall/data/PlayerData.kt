@@ -2,9 +2,10 @@ package com.example.fall.data
 
 import android.graphics.PointF
 
-data class Player(
+data class PlayerData(
     var posX: Float,
     var posY: Float,
+    var size: Float,
     var model: String,
     var currentState: PlayerStates,
     var health: Int,

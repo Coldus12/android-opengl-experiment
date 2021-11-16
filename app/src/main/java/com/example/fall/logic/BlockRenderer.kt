@@ -1,6 +1,7 @@
 package com.example.fall.logic
 
 import android.opengl.GLES30
+import android.util.Log
 import com.example.fall.data.Block
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4

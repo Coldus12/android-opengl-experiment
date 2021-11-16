@@ -24,6 +24,11 @@ class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
         centerY = posY
     }
 
+    fun setSize(w: Float, h: Float) {
+        sizeWidth = w
+        sizeHeight = h
+    }
+
     fun getV() : Mat4 {
         return Mat4.translateMat(Vec4(floatArrayOf(-centerX, -centerY, 0f, 1f)))
     }
