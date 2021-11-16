@@ -115,6 +115,7 @@ class MatMultiplicationTest {
         val cam = Camera(10f,10f, 0f,0f)
 
         val mvp = m.multiplyBy(cam.getV())
+
         val res = mvp.multiplyBy(ogVec)
 
         // Simple translate test
@@ -137,10 +138,87 @@ class MatMultiplicationTest {
         assertEquals(3f, round(res.getData()[1]))
     }
 
+    // Map generation test
     /*@Test
     fun fff() {
         var map = Map(100,100)
         assertEquals(1,0)
+    }*/
+
+    // TRASH
+    /*@Test
+    fun testThisShit() {
+        val m = Mat4(floatArrayOf(0.05f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 0.05f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    3.1606042f, 1.0628605f, 0.0f, 1.0f))
+
+        val vp = Mat4(floatArrayOf(3.761111f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 2.0f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    -11.075193f, -1.0215734f, 0.0f, 1.0f))
+
+        val mvp = Mat4(floatArrayOf(0.18805556f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 0.1f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    0.81219006f, 1.1041476f, 0.0f, 1.0f))
+
+        /*mvp.print()
+        val realMvp = m.multiplyBy(vp)
+        println()
+        realMvp.print()*/
+
+        assertEquals(1,1)
+    }*/
+
+    /*@Test
+    fun testThisShit2() {
+        val m = Mat4(floatArrayOf(0.05f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 0.05f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    3.31683f, 2.7730212f, 0.0f, 1.0f))
+
+        //data posX = 3.31683
+        //data posY = 2.7730212
+
+        val v = Mat4(floatArrayOf(1.0f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 1.0f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    -3.0146794f, -3.162562f, 0.0f, 1.0f))
+
+        //camera posX = 3.0146794
+        //camera posY = 3.162562
+
+        val p = Mat4(floatArrayOf(3.761111f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 2.0f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    0.0f, 0.0f, 0.0f, 1.0f))
+
+        val vp = Mat4(floatArrayOf(3.761111f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 2.0f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    -11.338544f, -6.325124f, 0.0f, 1.0f))
+
+        val mvp = Mat4(floatArrayOf(0.18805556f, 0.0f, 0.0f, 0.0f,
+                                    0.0f, 0.1f, 0.0f, 0.0f,
+                                    0.0f, 0.0f, 1.0f, 0.0f,
+                                    1.1364212f, -0.77908134f, 0.0f, 1.0f))
+
+        val mv = m.multiplyBy(v)
+        val mvpR = mv.multiplyBy(p)
+        mv.print()
+
+        /*val realVp = v.multiplyBy(p)
+        realVp.print()
+        println()
+        vp.print()
+        println()
+        val realMvP = m.multiplyBy(vp)
+        realMvP.print()
+        println()
+        mvp.print()*/
+
+        assertEquals(0,1)
     }*/
 
     @Test

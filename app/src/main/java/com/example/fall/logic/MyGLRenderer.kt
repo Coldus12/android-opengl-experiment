@@ -1,86 +1,74 @@
 package com.example.fall.logic
 
-import android.graphics.Point
-import android.graphics.PointF
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
-import android.util.Log
-import com.example.fall.data.Playah
+import com.example.fall.data.Player
 import com.example.fall.data.PlayerStates
 import com.example.fall.math.Map
-import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.PI
-import kotlin.random.Random
 
 class MyGLRenderer : GLSurfaceView.Renderer {
 
     private lateinit var renderer: PlayerRenderer
     private lateinit var blockRenderer: BlockRenderer
-    private lateinit var data: Playah
-    private lateinit var square: Playah
+    private lateinit var data: Player
+    private lateinit var square: Player
     private lateinit var cam: Camera
-    private var map = Map(100,100, 0.05f)
+    private lateinit var map: Map
+    private var ready = false
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
+        map = Map(500,500, 2f)
 
-        data = Playah(
-            PointF(0.0f,0.0f),
+        data = Player(
+            map.getStartingX(),
+            map.getStartingY(),
             "no_model",
             PlayerStates.standing,
             100,
             0f
         )
 
-        square = Playah(
-            PointF(0f, 0f),
-            "no",
-            PlayerStates.standing,
-            100,
-            (PI/4).toFloat()
-        )
-
         renderer = PlayerRenderer()
         blockRenderer = BlockRenderer()
-
-        cam = Camera(data.position.x, data.position.y, 1f,1f)
-
-        renderer.setViewProj(cam.getV(), cam.getP())
-        blockRenderer.setViewProj(cam.getV(), cam.getP())
     }
 
-    fun rendermap() {
-        var data = map.getMap()
+    private fun rendermap() {
+        ready = false
+        val list = map.getMapNear(data.posX, data.posY, 32)
         blockRenderer.setViewProj(cam.getV(), cam.getP())
 
         val passable = floatArrayOf(1f, 0.5f, 0.5f, 1f)
         val nope = floatArrayOf(0f, 0.5f, 0f, 1f)
 
-        for (i in data.indices) {
-            if (data[i].passable)
-                blockRenderer.draw(data[i], passable)
+        for (i in list.indices) {
+            if (list[i].passable)
+                blockRenderer.draw(list[i], passable)
             else
-                blockRenderer.draw(data[i], nope)
+                blockRenderer.draw(list[i], nope)
         }
     }
 
     override fun onDrawFrame(unused: GL10) {
+        ready = false
+
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
 
-        cam.setPos(data.position.x, data.position.y)
+        cam.setPos(data.posX, data.posY)
 
         renderer.setViewProj(cam.getV(), cam.getP())
         rendermap()
-        //renderer.draw(square, floatArrayOf(0.5f, 0f, 0.5f, 1f))
+
         renderer.draw(data)
+        ready = true
     }
 
     fun changePos(x: Float, y: Float) {
-        data.position.x = x
-        data.position.y = y
+        data.posX = x
+        data.posY = y
     }
 
     fun rotate(angle: Float) {
@@ -88,21 +76,24 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     }
 
     fun deltaPos(x: Float, y: Float) {
-        data.position.x += x
-        data.position.y += y
+        data.posX += x
+        data.posY += y
 
-        cam.setPos(data.position.x, data.position.y)
+        cam.setPos(data.posX, data.posY)
     }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES30.glViewport(0, 0, width, height)
 
-        val ratio = width.toFloat() / height.toFloat()
-        cam = Camera(data.position.x, data.position.y, ratio, 1f)
+        cam = Camera(data.posX, data.posY, width.toFloat(), height.toFloat())
+        cam.zoom(70f)
 
         renderer.setViewProj(cam.getV(), cam.getP())
         rendermap()
-        //renderer.draw(square)
         renderer.draw(data)
+    }
+
+    fun readyToDraw(): Boolean {
+        return ready
     }
 }

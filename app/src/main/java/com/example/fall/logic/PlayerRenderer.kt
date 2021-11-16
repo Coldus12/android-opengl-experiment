@@ -1,7 +1,7 @@
 package com.example.fall.logic
 
 import android.opengl.GLES30
-import com.example.fall.data.Playah
+import com.example.fall.data.Player
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import java.nio.ByteBuffer
@@ -90,7 +90,7 @@ class PlayerRenderer {
         }
     }
 
-    fun draw(data: Playah, color: FloatArray) {
+    fun draw(data: Player, color: FloatArray) {
         GLES30.glUseProgram(mProgram)
 
         vertexCount = lFloat.size / COORDS_PER_VERTEX
@@ -114,8 +114,8 @@ class PlayerRenderer {
 
             GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
                 val r = Mat4.rotMat(data.lookDirection)
-                val t = Mat4.translateMat(Vec4(floatArrayOf(data.position.x, data.position.y, 0f, 1f)))
-                val s = Mat4.scaleMat(Vec4(floatArrayOf(0.05f, 0.05f, 0f, 1f)))
+                val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
+                val s = Mat4.scaleMat(Vec4(floatArrayOf(1f, 1f, 0f, 1f)))
 
                 val sr = s.multiplyBy(r)
                 val m = sr.multiplyBy(t)
@@ -131,7 +131,7 @@ class PlayerRenderer {
         }
     }
 
-    fun draw(data: Playah) {
+    fun draw(data: Player) {
         GLES30.glUseProgram(mProgram)
 
         vertexCount = lFloat.size / COORDS_PER_VERTEX
@@ -156,13 +156,14 @@ class PlayerRenderer {
 
             GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
                 val r = Mat4.rotMat(data.lookDirection);
-                val t = Mat4.translateMat(Vec4(floatArrayOf(data.position.x, data.position.y, 0f, 1f)))
-                val s = Mat4.scaleMat(Vec4(floatArrayOf(0.05f, 0.05f, 0f, 1f)))
+                val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
+                val vt = Mat4.translateMat(Vec4(floatArrayOf(-data.posX, -data.posY, 0f, 1f)))
+                val s = Mat4.scaleMat(Vec4(floatArrayOf(1f, 1f, 0f, 1f)))
 
                 val sr = s.multiplyBy(r)
                 val m = sr.multiplyBy(t)
 
-                val vp = v.multiplyBy(p)
+                val vp = vt.multiplyBy(p)
                 val mvp = m.multiplyBy(vp)
 
                 GLES30.glUniformMatrix4fv(it2, 1, true, mvp.getData(), 0)

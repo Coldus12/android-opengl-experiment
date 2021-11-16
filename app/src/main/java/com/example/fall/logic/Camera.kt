@@ -10,6 +10,8 @@ class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
     private var sizeWidth: Float
     private var sizeHeight: Float
 
+    private var zoomVal: Float = 1f
+
     init {
         centerX = posX
         centerY = posY
@@ -27,7 +29,7 @@ class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
     }
 
     fun getP() : Mat4 {
-        return Mat4.scaleMat(Vec4(floatArrayOf(2f/sizeWidth, 2f/sizeHeight, 0f, 1f)))
+        return Mat4.scaleMat(Vec4(floatArrayOf(zoomVal * 2f/sizeWidth, zoomVal * 2f/sizeHeight, 0f, 1f)))
     }
 
     fun getVinv() : Mat4 {
@@ -39,8 +41,7 @@ class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
     }
 
     fun zoom(s: Float) {
-        sizeWidth *= s
-        sizeHeight *= s
+        zoomVal *= s
     }
 
     fun pan(dX: Float, dY: Float) {

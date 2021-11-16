@@ -2,15 +2,12 @@ package com.example.fall.logic
 
 import android.opengl.GLES30
 import com.example.fall.data.Block
-import com.example.fall.data.Playah
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 class BlockRenderer {
     private val vertexShaderCode =
@@ -34,13 +31,10 @@ class BlockRenderer {
     private var mPositionHandle: Int = 0
     private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_SIZE // 4 bytes per vertex
     private var vertexCount: Int = 0 / COORDS_PER_VERTEX
-    private val lFloat: MutableList<Float> = arrayListOf()
     private var vertexBuffer: FloatBuffer
 
     private lateinit var p: Mat4
     private lateinit var v: Mat4
-
-    private var nr = 4
 
     fun setViewProj(v: Mat4, p: Mat4) {
         this.v = v;
@@ -64,17 +58,17 @@ class BlockRenderer {
     private var mProgram: Int
 
     init {
-        for (i in 0..nr) {
-            lFloat.add(cos(2* PI /nr * i).toFloat())
-            lFloat.add(sin(2* PI /nr * i).toFloat())
-        }
+        val lFloat = floatArrayOf(-0.5f, 0.5f,
+                                    0.5f, 0.5f,
+                                    0.5f, -0.5f,
+                                    -0.5f, -0.5f)
 
         vertexBuffer =
             ByteBuffer.allocateDirect(lFloat.size * FLOAT_SIZE).run {
                 order(ByteOrder.nativeOrder())
 
                 asFloatBuffer().apply {
-                    put(lFloat.toFloatArray())
+                    put(lFloat)
                     position(0)
                 }
             }
@@ -93,8 +87,6 @@ class BlockRenderer {
 
     fun draw(data: Block, color: FloatArray) {
         GLES30.glUseProgram(mProgram)
-
-        vertexCount = lFloat.size / COORDS_PER_VERTEX
 
         mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
             GLES30.glEnableVertexAttribArray(it)
@@ -135,8 +127,6 @@ class BlockRenderer {
     fun draw(data: Block) {
         GLES30.glUseProgram(mProgram)
 
-        vertexCount = lFloat.size / COORDS_PER_VERTEX
-
         mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
             GLES30.glEnableVertexAttribArray(it)
 
@@ -156,7 +146,7 @@ class BlockRenderer {
             }
 
             GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
-                val r = Mat4.rotMat(0f)
+                val r = Mat4.rotMat(PI.toFloat()/4f)
                 val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
                 val s = Mat4.scaleMat(Vec4(floatArrayOf(data.blockSize, data.blockSize, 0f, 1f)))
 

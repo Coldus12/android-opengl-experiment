@@ -1,7 +1,9 @@
 package com.example.fall.math
 
+import android.util.Log
 import com.example.fall.data.Block
 import com.example.fall.data.BlockTextureTypes
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class Map(m: Int, n: Int, blockSize: Float = 1f) {
@@ -14,6 +16,9 @@ class Map(m: Int, n: Int, blockSize: Float = 1f) {
     private var binary = BooleanArray(m*n)
 
     private var random: Random = Random
+
+    private var initX: Float = 0f
+    private var initY: Float = 0f
 
     init {
         generateBinaryData()
@@ -34,6 +39,11 @@ class Map(m: Int, n: Int, blockSize: Float = 1f) {
         // Generating "caves"
         for (i in 0 until 2*width*height/3) {
             binary[startY * width + startX] = true
+
+            if (i == width*height/2) {
+                initX = startX.toFloat()
+                initY = startY.toFloat()
+            }
 
             when (random.nextInt(0,4)) {
                 0 -> {
@@ -114,6 +124,12 @@ class Map(m: Int, n: Int, blockSize: Float = 1f) {
         }
     }
 
+    private fun getBlock(i: Int, j: Int): Block {
+        return if (i in 0 until width && j in 0 until height)
+            data[j * width + i]
+        else data[0]
+    }
+
     fun printBinary() {
         for ((c, i) in binary.withIndex()) {
             if (c%width == 0)
@@ -128,5 +144,34 @@ class Map(m: Int, n: Int, blockSize: Float = 1f) {
 
     fun getMap() : MutableList<Block> {
         return data
+    }
+
+    fun getMapNear(posX: Float, posY: Float, sampleSize: Int): MutableList<Block> {
+        val ret = mutableListOf<Block>()
+
+        val roundedX = (posY / blockSize).roundToInt()
+        val roundedY = (posX / blockSize).roundToInt()
+
+        val xStart = if (roundedX - sampleSize/2 > 0) roundedX - sampleSize/2 else 0
+        val yStart = if (roundedY - sampleSize/2 > 0) roundedY - sampleSize/2 else 0
+
+        val xStop = if (roundedX + sampleSize/2 < width) roundedX + sampleSize/2 else width
+        val yStop = if (roundedY + sampleSize/2 < height) roundedY + sampleSize/2 else height
+
+        for (i in xStart until xStop) {
+            for (j in yStart until yStop) {
+                ret.add(getBlock(i,j))
+            }
+        }
+
+        return ret
+    }
+
+    fun getStartingX(): Float {
+        return initX * blockSize
+    }
+
+    fun getStartingY(): Float {
+        return initY * blockSize
     }
 }

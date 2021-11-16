@@ -15,6 +15,7 @@ class MyGLSurfaceView(context: Context, attrs: AttributeSet) : GLSurfaceView(con
 
         renderer = MyGLRenderer()
         setRenderer(renderer)
+        renderMode = RENDERMODE_WHEN_DIRTY
     }
 
     fun moveDelta(x: Float, y: Float) {
@@ -23,5 +24,9 @@ class MyGLSurfaceView(context: Context, attrs: AttributeSet) : GLSurfaceView(con
 
     fun rot(angle: Float) {
         renderer.rotate(angle)
+    }
+
+    fun readyToDraw(): Boolean {
+        return renderer.readyToDraw()
     }
 }

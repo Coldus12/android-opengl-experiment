@@ -4,8 +4,13 @@ import android.app.Activity
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.fall.R
 import com.example.fall.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -28,10 +33,11 @@ class MainActivity : Activity() {
         jMove.setOnMoveListener { angle: Int, strength: Int ->
             val rad = PI/180.0 * angle
 
-            val x = cos(rad) * (strength / 100.0) / 10.0
-            val y = sin(rad) * (strength / 100.0) / 10.0
+            val x = cos(rad) * (strength / 100.0) / 10.0 * 10
+            val y = sin(rad) * (strength / 100.0) / 10.0 * 10
 
             glView.moveDelta(x.toFloat(),y.toFloat())
+            //glView.requestRender()
         }
 
         jTurn.setOnMoveListener {angle: Int, strength: Int ->
@@ -40,6 +46,23 @@ class MainActivity : Activity() {
             //Log.i("[LOG]","Rad $rad")
             if (strength > 50)
                 glView.rot(rad.toFloat())
+
+            //glView.requestRender()
+        }
+
+        val draw = Draw(glView)
+    }
+}
+
+class Draw(glView: MyGLSurfaceView): ViewModel() {
+    init {
+        viewModelScope.launch {
+            while(true) {
+                if (glView.readyToDraw())
+                    glView.requestRender()
+
+                delay(1)
+            }
         }
     }
 }
