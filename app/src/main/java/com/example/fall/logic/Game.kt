@@ -1,5 +1,6 @@
 package com.example.fall.logic
 
+import android.content.Context
 import android.opengl.GLES30
 import android.util.Log
 import com.example.fall.data.Block
@@ -9,8 +10,8 @@ import com.example.fall.data.PlayerStates
 import com.example.fall.math.Map
 import kotlin.math.roundToInt
 
-class Game {
-    private var player: Player = Player()
+class Game(context: Context) {
+    private var player: Player
     private var blockRenderer: BlockRenderer
     private var data: PlayerData = PlayerData(
         0f,
@@ -26,15 +27,21 @@ class Game {
     private var map: Map
     private var blockList: MutableList<Block>
     private lateinit var visibleBlocks: MutableList<Block>
+    private var context: Context
 
     init {
+        this.context = context
+
         map = Map(500,500, 3f)
         data.posX = map.getStartingX()
         data.posY = map.getStartingY()
         blockList = map.getMap()
 
+        player = Player()
         player.setPlayerData(data)
+        player.loadTexture(context)
         blockRenderer = BlockRenderer()
+        blockRenderer.loadTextures(context)
 
         cam = Camera(data.posX, data.posY, 1f, 1f)
         cam.zoom(70f)
@@ -57,7 +64,6 @@ class Game {
     }
 
     fun render() {
-        //player.setPlayerData(data)
         rendermap()
         renderplayer()
     }
@@ -66,14 +72,8 @@ class Game {
         visibleBlocks = map.getMapNear(data.posX, data.posY, 32)
         blockRenderer.setViewProj(cam.getV(), cam.getP())
 
-        val passable = floatArrayOf(1f, 0.5f, 0.5f, 1f)
-        val nope = floatArrayOf(0f, 0.5f, 0f, 1f)
-
         for (i in visibleBlocks.indices) {
-            if (visibleBlocks[i].passable)
-                blockRenderer.draw(visibleBlocks[i], passable)
-            else
-                blockRenderer.draw(visibleBlocks[i], nope)
+            blockRenderer.draw(visibleBlocks[i])
         }
     }
 

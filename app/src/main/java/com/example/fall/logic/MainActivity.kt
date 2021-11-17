@@ -40,7 +40,7 @@ class MainActivity : Activity() {
             val rad = PI/180.0 * angle
 
             //Log.i("[LOG]","Rad $rad")
-            if (strength > 50)
+            if (strength > 25)
                 glView.rot(rad.toFloat())
 
             //glView.requestRender()

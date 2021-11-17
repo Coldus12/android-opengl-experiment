@@ -1,8 +1,11 @@
 package com.example.fall.logic
 
+import android.content.Context
 import android.opengl.GLES30
 import android.util.Log
+import com.example.fall.R
 import com.example.fall.data.Block
+import com.example.fall.data.BlockTextureTypes
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import java.nio.ByteBuffer
@@ -11,21 +14,38 @@ import java.nio.FloatBuffer
 import kotlin.math.PI
 
 class BlockRenderer {
+    private lateinit var wall1: Texture
+    private lateinit var wall2: Texture
+    private lateinit var wall3: Texture
+    private lateinit var floor: Texture
+
+    fun loadTextures(context: Context) {
+        wall1 = Texture(context, R.drawable.one)
+        wall2 = Texture(context, R.drawable.two)
+        wall3 = Texture(context, R.drawable.three)
+        floor = Texture(context, R.drawable.floor_t)
+    }
+
     private val vertexShaderCode =
         "attribute vec2 vPosition;" +
                 "uniform mat4 MVPMatrix;" +
+                "varying vec2 texPos;" +
                 "void main() {" +
+                "   texPos = vec2(vPosition.x + 0.5, vPosition.y + 0.5);" +
                 "   gl_Position = vec4(vPosition.x, vPosition.y, 0, 1) * MVPMatrix;" +
                 "}"
 
     private val fragmentShaderCode =
         "precision highp float;" +
-                "uniform vec4 vColor;" +
+                "uniform sampler2D sampler;" +
+                "varying vec2 texPos;" +
                 "void main() {" +
-                "  gl_FragColor = vColor;" +
+                "   vec4 texColor = texture2D(sampler, texPos);" +
+                "   if (texColor.a < 0.1)" +
+                "       discard;" +
+                "  gl_FragColor = texColor;" +
                 "}"
 
-    private val color = floatArrayOf(0f, 0.5f, 1.0f, 1.0f)
     private val FLOAT_SIZE = 4
     private val COORDS_PER_VERTEX = 2
     private var mColorHandle: Int = 0
@@ -47,13 +67,6 @@ class BlockRenderer {
             GLES30.glShaderSource(shader, shaderCode)
             GLES30.glCompileShader(shader)
         }
-    }
-
-    fun changeColor(r: Float, g: Float, b: Float, a: Float) {
-        color[0] = r
-        color[1] = g
-        color[2] = b
-        color[3] = a
     }
 
     private var mProgram: Int
@@ -83,45 +96,10 @@ class BlockRenderer {
             GLES30.glAttachShader(it, vertexShader)
             GLES30.glAttachShader(it, fragmentShader)
             GLES30.glLinkProgram(it)
-        }
-    }
 
-    fun draw(data: Block, color: FloatArray) {
-        GLES30.glUseProgram(mProgram)
-
-        mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
-            GLES30.glEnableVertexAttribArray(it)
-
-            GLES30.glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GLES30.GL_FLOAT,
-                false,
-                vertexStride,
-                vertexBuffer
-            )
-
-            mColorHandle = GLES30.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
-                // Set color for drawing the triangle
-                GLES30.glUniform4fv(colorHandle, 1, color, 0)
-            }
-
-            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
-                val r = Mat4.rotMat(0f)
-                val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
-                val s = Mat4.scaleMat(Vec4(floatArrayOf(data.blockSize, data.blockSize, 0f, 1f)))
-
-                val sr = s.multiplyBy(r)
-                val m = sr.multiplyBy(t)
-
-                val vp = v.multiplyBy(p)
-                val mvp = m.multiplyBy(vp)
-
-                GLES30.glUniformMatrix4fv(it2, 1, true, mvp.getData(), 0)
-            }
-
-            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
-            GLES30.glDisableVertexAttribArray(it)
+            Log.i("[LOOG]","Program log: ${GLES30.glGetProgramInfoLog(it)}")
+            Log.i("[LOOG]","VertexShader log: ${GLES30.glGetShaderInfoLog(vertexShader)}")
+            Log.i("[LOOG]","FragmentShader log: ${GLES30.glGetShaderInfoLog(fragmentShader)}")
         }
     }
 
@@ -140,14 +118,15 @@ class BlockRenderer {
                 vertexBuffer
             )
 
-            mColorHandle = GLES30.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
-
-                // Set color for drawing the triangle
-                GLES30.glUniform4fv(colorHandle, 1, color, 0)
+            when (data.type) {
+                BlockTextureTypes.Wall1 -> wall1.setTexture(GLES30.glGetUniformLocation(mProgram, "sampler"))
+                BlockTextureTypes.Wall2 -> wall2.setTexture(GLES30.glGetUniformLocation(mProgram, "sampler"))
+                BlockTextureTypes.Wall3 -> wall3.setTexture(GLES30.glGetUniformLocation(mProgram, "sampler"))
+                else -> {floor.setTexture(GLES30.glGetUniformLocation(mProgram, "sampler"))}
             }
 
             GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
-                val r = Mat4.rotMat(PI.toFloat()/4f)
+                val r = Mat4.rotMat(0f)
                 val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
                 val s = Mat4.scaleMat(Vec4(floatArrayOf(data.blockSize, data.blockSize, 0f, 1f)))
 

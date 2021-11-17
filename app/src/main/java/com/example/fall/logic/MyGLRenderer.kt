@@ -1,5 +1,6 @@
 package com.example.fall.logic
 
+import android.content.Context
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import com.example.fall.data.PlayerData
@@ -8,14 +9,19 @@ import com.example.fall.math.Map
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class MyGLRenderer : GLSurfaceView.Renderer {
+class MyGLRenderer(context: Context) : GLSurfaceView.Renderer {
 
     private lateinit var game: Game
     private var ready = false
+    private val context: Context
+
+    init {
+        this.context = context
+    }
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
-        game = Game()
+        game = Game(context)
         game.render()
     }
 
