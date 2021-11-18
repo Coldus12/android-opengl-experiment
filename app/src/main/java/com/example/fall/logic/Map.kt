@@ -1,16 +1,14 @@
-package com.example.fall.math
+package com.example.fall.logic
 
-import android.util.Log
 import com.example.fall.data.Block
 import com.example.fall.data.BlockTextureTypes
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class Map(m: Int, n: Int, blockSize: Float = 1f) {
+class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
 
     private var width = m
     private var height = n
-    private var blockSize = blockSize
 
     private var data = mutableListOf<Block>()
     private var binary = BooleanArray(m*n)

@@ -1,4 +1,4 @@
-package com.example.fall.logic
+package com.example.fall.opengl
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -7,15 +7,15 @@ import android.opengl.GLUtils
 
 class Texture(context: Context, resourceId: Int) {
 
-    private var m_TextureHandle: Int
+    private var mTexturehandle: Int
 
     init {
-        m_TextureHandle = loadTexture(context, resourceId)
+        mTexturehandle = loadTexture(context, resourceId)
     }
 
-    fun setTexture(textUniformId: Int) {
+    fun setTexture() {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, m_TextureHandle)
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexturehandle)
     }
 
     private fun loadTexture(context: Context, resourceId: Int): Int {
@@ -46,7 +46,7 @@ class Texture(context: Context, resourceId: Int) {
 
             return textureHandle[0]
         } else {
-            throw RuntimeException("error loading texture");
+            throw RuntimeException("error loading texture")
         }
     }
 }

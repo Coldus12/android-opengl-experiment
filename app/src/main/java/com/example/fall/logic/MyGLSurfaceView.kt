@@ -3,9 +3,6 @@ package com.example.fall.logic
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View
 
 class MyGLSurfaceView(context: Context, attrs: AttributeSet) : GLSurfaceView(context,attrs) {
     private val renderer: MyGLRenderer

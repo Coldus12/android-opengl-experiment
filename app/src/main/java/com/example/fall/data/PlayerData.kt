@@ -1,7 +1,5 @@
 package com.example.fall.data
 
-import android.graphics.PointF
-
 data class PlayerData(
     var posX: Float,
     var posY: Float,

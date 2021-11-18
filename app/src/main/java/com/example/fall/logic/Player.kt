@@ -1,52 +1,21 @@
 package com.example.fall.logic
 
 import android.content.Context
-import android.opengl.GLES30
-import android.util.Log
+import com.example.fall.opengl.Texture
 import com.example.fall.R
 import com.example.fall.data.PlayerData
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
+import com.example.fall.opengl.Shader
 
-class Player {
+class Player(private var context: Context) {
     private lateinit var texture: Texture
 
-    fun loadTexture(context: Context) {
+    private fun loadTexture() {
         texture = Texture(context, R.drawable.playermodel1)
     }
 
-    private val vertexShaderCode =
-        "attribute vec2 vPosition;" +
-                "uniform mat4 MVPMatrix;" +
-                "varying vec2 texPos;" +
-                "void main() {" +
-                "   texPos = vec2((vPosition.x + 1.0)/2.0, (vPosition.y + 1.0)/2.0);" +
-                "   gl_Position = vec4(vPosition.x, vPosition.y, 0, 1) * MVPMatrix;" +
-                "}"
-
-    private val fragmentShaderCode =
-        "precision highp float;" +
-                "uniform sampler2D sampler;" +
-                "varying vec2 texPos;" +
-                "void main() {" +
-                "   vec4 texColor = texture2D(sampler, texPos);" +
-                "   if (texColor.a < 0.1)" +
-                "       discard;" +
-                "  gl_FragColor = texColor;" +
-                "}"
-
     private lateinit var data: PlayerData
-    private val FLOAT_SIZE = 4
-    private val COORDS_PER_VERTEX = 2
-    private var mColorHandle: Int = 0
-    private var mPositionHandle: Int = 0
-    private val vertexStride: Int = COORDS_PER_VERTEX * FLOAT_SIZE // 4 bytes per vertex
-    private var vertexCount: Int = 0 / COORDS_PER_VERTEX
-    private var vertexBuffer: FloatBuffer
-
     private lateinit var p: Mat4
     private lateinit var v: Mat4
 
@@ -55,89 +24,41 @@ class Player {
         this.p = p
     }
 
-    fun loadShader(type: Int, shaderCode: String): Int {
-        return  GLES30.glCreateShader(type).also { shader ->
-            GLES30.glShaderSource(shader, shaderCode)
-            GLES30.glCompileShader(shader)
-        }
-    }
-
-    private var mProgram: Int
+    private val playerGeometry = floatArrayOf(-1f, 1f,
+        1f, 1f,
+        1f, -1f,
+        -1f, -1f)
 
     fun setPlayerData(playerData: PlayerData) {
         this.data = playerData
     }
 
+    private var shader: Shader = Shader(context, R.raw.player_vertex_shader, R.raw.player_fragment_shader, playerGeometry, 2, "vPosition")
+
     init {
-        val lFloat = floatArrayOf(-1f, 1f,
-            1f, 1f,
-            1f, -1f,
-            -1f, -1f)
-
-        vertexBuffer =
-            ByteBuffer.allocateDirect(lFloat.size * FLOAT_SIZE).run {
-                order(ByteOrder.nativeOrder())
-
-                asFloatBuffer().apply {
-                    put(lFloat)
-                    position(0)
-                }
-            }
-
-        vertexCount = lFloat.size / COORDS_PER_VERTEX
-
-        val vertexShader: Int = loadShader(GLES30.GL_VERTEX_SHADER, vertexShaderCode)
-        val fragmentShader: Int = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShaderCode)
-
-        mProgram = GLES30.glCreateProgram().also {
-            GLES30.glAttachShader(it, vertexShader)
-            GLES30.glAttachShader(it, fragmentShader)
-            GLES30.glLinkProgram(it)
-
-            Log.i("[LOOG]","Program log: ${GLES30.glGetProgramInfoLog(it)}")
-            Log.i("[LOOG]","VertexShader log: ${GLES30.glGetShaderInfoLog(vertexShader)}")
-            Log.i("[LOOG]","FragmentShader log: ${GLES30.glGetShaderInfoLog(fragmentShader)}")
-        }
+        loadTexture()
     }
 
     fun draw() {
-        GLES30.glUseProgram(mProgram)
+        shader.useProgram()
+        texture.setTexture()
 
-        mPositionHandle = GLES30.glGetAttribLocation(mProgram, "vPosition").also {
-            GLES30.glEnableVertexAttribArray(it)
+        val r = Mat4.rotMat(data.lookDirection)
+        val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
+        val vt = Mat4.translateMat(Vec4(floatArrayOf(-data.posX, -data.posY, 0f, 1f)))
+        val s = Mat4.scaleMat(Vec4(floatArrayOf(data.size, data.size, 0f, 1f)))
 
-            GLES30.glVertexAttribPointer(
-                it,
-                COORDS_PER_VERTEX,
-                GLES30.GL_FLOAT,
-                false,
-                vertexStride,
-                vertexBuffer
-            )
+        val sr = s.multiplyBy(r)
+        val m = sr.multiplyBy(t)
 
-            texture.setTexture(GLES30.glGetUniformLocation(mProgram, "sampler"))
+        val vp = vt.multiplyBy(p)
+        val mvp = m.multiplyBy(vp)
 
-            GLES30.glGetUniformLocation(mProgram, "MVPMatrix").also { it2 ->
-                val r = Mat4.rotMat(data.lookDirection);
-                val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
-                val vt = Mat4.translateMat(Vec4(floatArrayOf(-data.posX, -data.posY, 0f, 1f)))
-                val s = Mat4.scaleMat(Vec4(floatArrayOf(data.size, data.size, 0f, 1f)))
-
-                val sr = s.multiplyBy(r)
-                val m = sr.multiplyBy(t)
-
-                val vp = vt.multiplyBy(p)
-                val mvp = m.multiplyBy(vp)
-
-                GLES30.glUniformMatrix4fv(it2, 1, true, mvp.getData(), 0)
-            }
-
-            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, vertexCount)
-            GLES30.glDisableVertexAttribArray(it)
-        }
+        shader.setUniformMat(mvp, "MVPMatrix")
+        shader.drawGeometry()
     }
 
-    fun shoot() {
+    /*fun shoot() {
 
-    }
+    }*/
 }

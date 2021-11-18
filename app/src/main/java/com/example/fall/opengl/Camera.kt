@@ -1,4 +1,4 @@
-package com.example.fall.logic
+package com.example.fall.opengl
 
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4

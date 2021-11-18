@@ -1,16 +1,12 @@
 package com.example.fall.logic
 
 import android.content.Context
-import android.opengl.GLES30
-import android.util.Log
 import com.example.fall.data.Block
-import com.example.fall.data.BlockTextureTypes
 import com.example.fall.data.PlayerData
 import com.example.fall.data.PlayerStates
-import com.example.fall.math.Map
-import kotlin.math.roundToInt
+import com.example.fall.opengl.Camera
 
-class Game(context: Context) {
+class Game(private var context: Context) {
     private var player: Player
     private var blockRenderer: BlockRenderer
     private var data: PlayerData = PlayerData(
@@ -27,21 +23,17 @@ class Game(context: Context) {
     private var map: Map
     private var blockList: MutableList<Block>
     private lateinit var visibleBlocks: MutableList<Block>
-    private var context: Context
 
     init {
-        this.context = context
 
         map = Map(500,500, 3f)
         data.posX = map.getStartingX()
         data.posY = map.getStartingY()
         blockList = map.getMap()
 
-        player = Player()
+        player = Player(context)
         player.setPlayerData(data)
-        player.loadTexture(context)
-        blockRenderer = BlockRenderer()
-        blockRenderer.loadTextures(context)
+        blockRenderer = BlockRenderer(context)
 
         cam = Camera(data.posX, data.posY, 1f, 1f)
         cam.zoom(70f)
