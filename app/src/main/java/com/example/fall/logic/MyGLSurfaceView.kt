@@ -10,20 +10,20 @@ class MyGLSurfaceView(context: Context, attrs: AttributeSet) : GLSurfaceView(con
     init {
         setEGLContextClientVersion(3)
 
-        renderer = MyGLRenderer(context, this)
+        renderer = MyGLRenderer()
         setRenderer(renderer)
         renderMode = RENDERMODE_WHEN_DIRTY
     }
 
-    fun moveDelta(x: Float, y: Float) {
-        renderer.deltaPos(x,y)
+    fun setGraphicalGameInterface(game: IGraphicalGame) {
+        renderer.setGraphicalGameInterface(game)
     }
 
-    fun rot(angle: Float) {
-        renderer.rotate(angle)
+    fun getEglContInitialized(): Boolean {
+        return renderer.getContextInitialized()
     }
 
-    fun readyToDraw(): Boolean {
-        return renderer.readyToDraw()
+    fun getReadyToDraw() : Boolean {
+        return  renderer.readyToDraw()
     }
 }

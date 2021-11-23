@@ -3,21 +3,15 @@ package com.example.fall.logic
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
-import com.example.fall.R
 import com.example.fall.data.*
 import com.example.fall.opengl.Camera
-import com.example.fall.opengl.Shader
-import com.example.fall.opengl.Texture
-import java.io.Console
-import javax.microedition.khronos.opengles.GL10
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Game(private var context: Context) {
+class Game(private var context: Context) : IGraphicalGame {
     private var player: Player
     private var blockRenderer: BlockRenderer
     private var bulletRenderer: BulletRenderer
-    private var bulletRenderer2: BulletRenderer? = null
     private var data: PlayerData = PlayerData(
         0f,
         0f,
@@ -57,7 +51,7 @@ class Game(private var context: Context) {
         blockRenderer.setViewProj(cam.getV(), cam.getP())
     }
 
-    fun setCameraSize(width: Float, height: Float) {
+    override fun setCameraSize(width: Float, height: Float) {
         cam.setSize(width, height)
     }
 
@@ -70,7 +64,7 @@ class Game(private var context: Context) {
         player.setPlayerData(data)
     }
 
-    fun render() {
+    override fun render() {
         stepBullets()
         rendermap()
         renderBullets()
@@ -153,12 +147,11 @@ class Game(private var context: Context) {
         val listCopy = bullets.toMutableList()
 
         for (b in listCopy) {
-            bulletRenderer2?.draw(b) ?: bulletRenderer.draw(b)
+            bulletRenderer.draw(b)
         }
     }
 
     fun stepBullets() {
-        bulletRenderer2?.setViewProj(cam.getV(), cam.getP())
         bulletRenderer.setViewProj(cam.getV(), cam.getP())
 
         // To avoid concurrent modifications
@@ -192,14 +185,5 @@ class Game(private var context: Context) {
             BulletTextures.standard,
             true
         ))
-
-        if (i >= 3) {
-            if (bulletRenderer2 == null) {
-                surfaceView?.queueEvent {
-                    bulletRenderer2 = BulletRenderer(context)
-                }
-                Log.i("[LOOG]", "BOOYYY")
-            }
-        }
     }
 }

@@ -10,14 +10,13 @@ import com.example.fall.opengl.Shader
 
 class Player(private var context: Context) {
     private lateinit var texture: Texture
+    private lateinit var data: PlayerData
+    private lateinit var p: Mat4
+    private lateinit var v: Mat4
 
     private fun loadTexture() {
         texture = Texture(context, R.drawable.playermodel1)
     }
-
-    private lateinit var data: PlayerData
-    private lateinit var p: Mat4
-    private lateinit var v: Mat4
 
     fun setViewProj(v: Mat4, p: Mat4) {
         this.v = v
@@ -57,7 +56,12 @@ class Player(private var context: Context) {
         shader.drawGeometry()
     }
 
-    /*fun shoot() {
+    fun move(dx: Float, dy: Float) {
+        data.posX += dx
+        data.posY += dy
+    }
 
-    }*/
+    fun rotate(rad: Float) {
+        data.lookDirection = rad
+    }
 }
