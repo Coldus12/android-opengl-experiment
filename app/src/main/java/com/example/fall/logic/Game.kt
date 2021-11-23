@@ -1,14 +1,23 @@
 package com.example.fall.logic
 
 import android.content.Context
-import com.example.fall.data.Block
-import com.example.fall.data.PlayerData
-import com.example.fall.data.PlayerStates
+import android.opengl.GLSurfaceView
+import android.util.Log
+import com.example.fall.R
+import com.example.fall.data.*
 import com.example.fall.opengl.Camera
+import com.example.fall.opengl.Shader
+import com.example.fall.opengl.Texture
+import java.io.Console
+import javax.microedition.khronos.opengles.GL10
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Game(private var context: Context) {
     private var player: Player
     private var blockRenderer: BlockRenderer
+    private var bulletRenderer: BulletRenderer
+    private var bulletRenderer2: BulletRenderer? = null
     private var data: PlayerData = PlayerData(
         0f,
         0f,
@@ -23,9 +32,14 @@ class Game(private var context: Context) {
     private var map: Map
     private var blockList: MutableList<Block>
     private lateinit var visibleBlocks: MutableList<Block>
+    private var bullets = mutableListOf<BulletData>()
+
+    private var surfaceView: GLSurfaceView? = null
+    fun setGLView(surface: GLSurfaceView) {
+        surfaceView = surface
+    }
 
     init {
-
         map = Map(500,500, 3f)
         data.posX = map.getStartingX()
         data.posY = map.getStartingY()
@@ -34,6 +48,7 @@ class Game(private var context: Context) {
         player = Player(context)
         player.setPlayerData(data)
         blockRenderer = BlockRenderer(context)
+        bulletRenderer = BulletRenderer(context)
 
         cam = Camera(data.posX, data.posY, 1f, 1f)
         cam.zoom(70f)
@@ -56,7 +71,9 @@ class Game(private var context: Context) {
     }
 
     fun render() {
+        stepBullets()
         rendermap()
+        renderBullets()
         renderplayer()
     }
 
@@ -64,9 +81,8 @@ class Game(private var context: Context) {
         visibleBlocks = map.getMapNear(data.posX, data.posY, 32)
         blockRenderer.setViewProj(cam.getV(), cam.getP())
 
-        for (i in visibleBlocks.indices) {
+        for (i in visibleBlocks.indices)
             blockRenderer.draw(visibleBlocks[i])
-        }
     }
 
     private fun renderplayer() {
@@ -129,5 +145,61 @@ class Game(private var context: Context) {
 
     fun rotatePlayer(rad: Float) {
         data.lookDirection = rad
+        shoot(rad)
+    }
+
+    fun renderBullets() {
+        // To avoid concurrent modifications
+        val listCopy = bullets.toMutableList()
+
+        for (b in listCopy) {
+            bulletRenderer2?.draw(b) ?: bulletRenderer.draw(b)
+        }
+    }
+
+    fun stepBullets() {
+        bulletRenderer2?.setViewProj(cam.getV(), cam.getP())
+        bulletRenderer.setViewProj(cam.getV(), cam.getP())
+
+        // To avoid concurrent modifications
+        val listCopy = bullets.toMutableList()
+
+        for (b in listCopy) {
+            b.posX += cos(b.direction) * b.speed
+            b.posY += sin(b.direction) * b.speed
+
+            if (!map.getBlockAt(b.posX, b.posY).passable)
+                b.exists = false
+        }
+
+        bullets.removeAll { b -> !b.exists }
+    }
+
+    var i = 0
+    fun shoot(rad: Float) {
+        i++
+        val dx = cos(rad)
+        val dy = sin(rad)
+        val size = 0.3f
+        val speed = 1f
+
+        bullets.add(BulletData(
+            data.posX + dx,
+            data.posY + dy,
+            rad,
+            size,
+            speed,
+            BulletTextures.standard,
+            true
+        ))
+
+        if (i >= 3) {
+            if (bulletRenderer2 == null) {
+                surfaceView?.queueEvent {
+                    bulletRenderer2 = BulletRenderer(context)
+                }
+                Log.i("[LOOG]", "BOOYYY")
+            }
+        }
     }
 }

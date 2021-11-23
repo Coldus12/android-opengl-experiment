@@ -45,13 +45,12 @@ class Player(private var context: Context) {
 
         val r = Mat4.rotMat(data.lookDirection)
         val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
-        val vt = Mat4.translateMat(Vec4(floatArrayOf(-data.posX, -data.posY, 0f, 1f)))
         val s = Mat4.scaleMat(Vec4(floatArrayOf(data.size, data.size, 0f, 1f)))
 
         val sr = s.multiplyBy(r)
         val m = sr.multiplyBy(t)
 
-        val vp = vt.multiplyBy(p)
+        val vp = v.multiplyBy(p)
         val mvp = m.multiplyBy(vp)
 
         shader.setUniformMat(mvp, "MVPMatrix")

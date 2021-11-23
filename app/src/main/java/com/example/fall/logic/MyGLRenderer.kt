@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
+class MyGLRenderer(private val context: Context, private var glView: GLSurfaceView) : GLSurfaceView.Renderer {
 
     private lateinit var game: Game
     private var ready = false
@@ -14,6 +14,7 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
         game = Game(context)
+        game.setGLView(glView)
         game.render()
     }
 
