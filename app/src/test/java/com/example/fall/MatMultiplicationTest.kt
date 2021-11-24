@@ -1,6 +1,6 @@
 package com.example.fall
 
-import com.example.fall.opengl.Camera
+import com.example.fall.graphics.Camera
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
 import junit.framework.Assert.assertEquals

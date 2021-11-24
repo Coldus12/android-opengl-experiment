@@ -46,14 +46,16 @@ class MainActivity : Activity() {
             val x = cos(rad) * (strength / 100.0) / 10.0 * 10
             val y = sin(rad) * (strength / 100.0) / 10.0 * 10
 
-            game.movePlayer(x.toFloat(), y.toFloat())
+            game.player.move(game, x.toFloat(), y.toFloat())
         }
 
         jTurn.setOnMoveListener {angle: Int, strength: Int ->
             val rad = PI/180.0 * angle
 
-            if (strength > 25)
-                game.rotatePlayer(rad.toFloat())
+            if (strength > 25) {
+                game.player.rotate(rad.toFloat())
+                game.player.shoot(game)
+            }
         }
 
         return glView.getEglContInitialized()
@@ -68,7 +70,7 @@ class Load(activity: MainActivity) : ViewModel() {
 
             while (run) {
                 run = !activity.initGame()
-                delay(100)
+                delay(5)
             }
         }
     }
@@ -78,9 +80,16 @@ class Load(activity: MainActivity) : ViewModel() {
 class Draw(glView: MyGLSurfaceView): ViewModel() {
     init {
         viewModelScope.launch {
+            //var start = System.currentTimeMillis()
+            //var timeItTook = System.currentTimeMillis()
             while(true) {
-                if (glView.getReadyToDraw())
+
+                if (glView.getReadyToDraw()) {
+                    //timeItTook = System.currentTimeMillis() - start
+                    //Log.i("[LOOG]","Time it took: $timeItTook, fps: ${1000/(timeItTook+1)}")
                     glView.requestRender()
+                    //start = System.currentTimeMillis()
+                }
 
                 delay(1)
             }

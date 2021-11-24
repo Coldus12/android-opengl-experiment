@@ -1,4 +1,4 @@
-package com.example.fall.opengl
+package com.example.fall.graphics.opengl
 
 import android.content.Context
 import android.opengl.GLES30

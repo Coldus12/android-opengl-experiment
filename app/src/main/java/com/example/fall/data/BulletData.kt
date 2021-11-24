@@ -3,7 +3,7 @@ package com.example.fall.data
 data class BulletData(
     var posX: Float,
     var posY: Float,
-    val direction: Float,
+    var direction: Float,
     val size: Float,
     val speed: Float,
     val texture: BulletTextures,

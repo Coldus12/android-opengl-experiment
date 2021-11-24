@@ -1,16 +1,21 @@
-package com.example.fall.opengl
+package com.example.fall.graphics.opengl
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import android.opengl.GLUtils
 
-class Texture(context: Context, resourceId: Int) {
+class Texture() {
 
-    private var mTexturehandle: Int
+    private var mTexturehandle: Int = -1
 
-    init {
-        mTexturehandle = loadTexture(context, resourceId)
+    constructor(context: Context, resourceId: Int) : this() {
+        loadTexture(context, resourceId)
+    }
+
+    constructor(bmp: Bitmap) : this() {
+        loadTexture(bmp)
     }
 
     fun setTexture() {
@@ -18,17 +23,13 @@ class Texture(context: Context, resourceId: Int) {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexturehandle)
     }
 
-    private fun loadTexture(context: Context, resourceId: Int): Int {
+    private fun loadTexture(bmp: Bitmap) {
         val textureHandle = IntArray(1)
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
         GLES30.glGenTextures(1, textureHandle, 0)
 
         if (textureHandle[0] != 0) {
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureHandle[0])
-            val options = BitmapFactory.Options()
-            options.inScaled = false
-
-            val bmp = BitmapFactory.decodeResource(context.resources, resourceId, options)
             GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGBA, bmp, 0)
             bmp.recycle()
 
@@ -44,9 +45,17 @@ class Texture(context: Context, resourceId: Int) {
                 GLES30.GL_NEAREST
             )
 
-            return textureHandle[0]
+            mTexturehandle = textureHandle[0]
         } else {
             throw RuntimeException("error loading texture")
         }
+    }
+
+    private fun loadTexture(context: Context, resourceId: Int) {
+        val options = BitmapFactory.Options()
+        options.inScaled = false
+        val bmp = BitmapFactory.decodeResource(context.resources, resourceId, options)
+
+        loadTexture(bmp)
     }
 }

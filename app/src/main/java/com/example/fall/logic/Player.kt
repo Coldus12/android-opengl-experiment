@@ -1,67 +1,49 @@
 package com.example.fall.logic
 
 import android.content.Context
-import com.example.fall.opengl.Texture
+import com.example.fall.graphics.opengl.Texture
 import com.example.fall.R
 import com.example.fall.data.PlayerData
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
-import com.example.fall.opengl.Shader
+import com.example.fall.graphics.Camera
+import com.example.fall.graphics.opengl.Shader
 
-class Player(private var context: Context) {
-    private lateinit var texture: Texture
-    private lateinit var data: PlayerData
-    private lateinit var p: Mat4
-    private lateinit var v: Mat4
+abstract class Player(private var context: Context) {
+    protected lateinit var texture: Texture
+    protected lateinit var shader: Shader
 
-    private fun loadTexture() {
-        texture = Texture(context, R.drawable.playermodel1)
+    lateinit var cam: Camera
+        protected set
+
+    lateinit var data: PlayerData
+        protected set
+
+    protected fun loadTexture() {
+        texture = Texture(context, data.modelResourceId)
     }
 
-    fun setViewProj(v: Mat4, p: Mat4) {
-        this.v = v
-        this.p = p
+    protected open var playerGeometry =
+        floatArrayOf(
+            -1f, 1f,
+            1f, 1f,
+            1f, -1f,
+            -1f, -1f
+        )
+
+    protected open var coords_per_vertex = 2
+
+    protected fun loadShader() {
+        shader = Shader(
+            context,
+            R.raw.player_vertex_shader,
+            R.raw.player_fragment_shader,
+            playerGeometry,
+            coords_per_vertex,
+            "vPosition"
+        )
     }
 
-    private val playerGeometry = floatArrayOf(-1f, 1f,
-        1f, 1f,
-        1f, -1f,
-        -1f, -1f)
-
-    fun setPlayerData(playerData: PlayerData) {
-        this.data = playerData
-    }
-
-    private var shader: Shader = Shader(context, R.raw.player_vertex_shader, R.raw.player_fragment_shader, playerGeometry, 2, "vPosition")
-
-    init {
-        loadTexture()
-    }
-
-    fun draw() {
-        shader.useProgram()
-        texture.setTexture()
-
-        val r = Mat4.rotMat(data.lookDirection)
-        val t = Mat4.translateMat(Vec4(floatArrayOf(data.posX, data.posY, 0f, 1f)))
-        val s = Mat4.scaleMat(Vec4(floatArrayOf(data.size, data.size, 0f, 1f)))
-
-        val sr = s.multiplyBy(r)
-        val m = sr.multiplyBy(t)
-
-        val vp = v.multiplyBy(p)
-        val mvp = m.multiplyBy(vp)
-
-        shader.setUniformMat(mvp, "MVPMatrix")
-        shader.drawGeometry()
-    }
-
-    fun move(dx: Float, dy: Float) {
-        data.posX += dx
-        data.posY += dy
-    }
-
-    fun rotate(rad: Float) {
-        data.lookDirection = rad
-    }
+    abstract fun move(game: Game, dx: Float, dy: Float)
+    abstract fun rotate(rad: Float)
+    abstract fun shoot(game: Game)
+    abstract fun draw()
 }

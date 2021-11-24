@@ -1,4 +1,4 @@
-package com.example.fall.opengl
+package com.example.fall.graphics
 
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4

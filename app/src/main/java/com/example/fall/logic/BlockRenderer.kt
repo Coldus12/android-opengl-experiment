@@ -1,13 +1,13 @@
 package com.example.fall.logic
 
 import android.content.Context
-import com.example.fall.opengl.Texture
+import com.example.fall.graphics.opengl.Texture
 import com.example.fall.R
 import com.example.fall.data.Block
 import com.example.fall.data.BlockTextureTypes
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
-import com.example.fall.opengl.Shader
+import com.example.fall.graphics.opengl.Shader
 
 class BlockRenderer(private var context: Context) {
     private lateinit var wall1: Texture

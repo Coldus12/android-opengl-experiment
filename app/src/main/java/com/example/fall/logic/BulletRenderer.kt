@@ -6,8 +6,8 @@ import com.example.fall.data.BulletData
 import com.example.fall.data.BulletTextures
 import com.example.fall.math.Mat4
 import com.example.fall.math.Vec4
-import com.example.fall.opengl.Shader
-import com.example.fall.opengl.Texture
+import com.example.fall.graphics.opengl.Shader
+import com.example.fall.graphics.opengl.Texture
 
 class BulletRenderer(private var context: Context)  {
     private lateinit var pellet: Texture

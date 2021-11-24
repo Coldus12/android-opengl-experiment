@@ -4,7 +4,7 @@ data class PlayerData(
     var posX: Float,
     var posY: Float,
     var size: Float,
-    var model: String,
+    var modelResourceId: Int,
     var currentState: PlayerStates,
     var health: Int,
     var lookDirection: Float
