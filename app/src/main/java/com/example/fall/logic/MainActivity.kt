@@ -2,7 +2,6 @@ package com.example.fall.logic
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fall.databinding.ActivityMainBinding
@@ -24,7 +23,6 @@ class MainActivity : Activity() {
         setContentView(binding.root)
 
         val load = Load(this)
-        val draw = Draw(binding.glView)
     }
 
     fun initGame() : Boolean {
@@ -43,8 +41,8 @@ class MainActivity : Activity() {
         jMove.setOnMoveListener { angle: Int, strength: Int ->
             val rad = PI/180.0 * angle
 
-            val x = cos(rad) * (strength / 100.0) / 10.0 * 10
-            val y = sin(rad) * (strength / 100.0) / 10.0 * 10
+            val x = cos(rad) * (strength / 100.0)
+            val y = sin(rad) * (strength / 100.0)
 
             game.player.move(game, x.toFloat(), y.toFloat())
         }
@@ -71,27 +69,6 @@ class Load(activity: MainActivity) : ViewModel() {
             while (run) {
                 run = !activity.initGame()
                 delay(5)
-            }
-        }
-    }
-}
-
-// Coroutine to draw the scene every x ms
-class Draw(glView: MyGLSurfaceView): ViewModel() {
-    init {
-        viewModelScope.launch {
-            //var start = System.currentTimeMillis()
-            //var timeItTook = System.currentTimeMillis()
-            while(true) {
-
-                if (glView.getReadyToDraw()) {
-                    //timeItTook = System.currentTimeMillis() - start
-                    //Log.i("[LOOG]","Time it took: $timeItTook, fps: ${1000/(timeItTook+1)}")
-                    glView.requestRender()
-                    //start = System.currentTimeMillis()
-                }
-
-                delay(1)
             }
         }
     }

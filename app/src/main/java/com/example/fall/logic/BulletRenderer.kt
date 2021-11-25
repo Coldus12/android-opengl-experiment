@@ -15,12 +15,15 @@ class BulletRenderer(private var context: Context)  {
 
     private lateinit var p: Mat4
     private lateinit var v: Mat4
-    private val geometryData = floatArrayOf(-0.5f, 0.5f,
-        0.5f, 0.5f,
-        0.5f, -0.5f,
-        -0.5f, -0.5f)
+    private val geometryData =
+        floatArrayOf(
+            -0.5f, 0.5f,
+            0.5f, 0.5f,
+            0.5f, -0.5f,
+            -0.5f, -0.5f
+        )
 
-    private var shader = Shader(context, R.raw.block_vertex_shader, R.raw.block_fragment_shader, geometryData, 2, "vPosition")
+    private var shader = Shader(context, R.raw.bullet_vertex_shader, R.raw.bullet_fragment_shader, geometryData, 2, "vPosition")
 
     fun setViewProj(v: Mat4, p: Mat4) {
         this.v = v
@@ -40,8 +43,8 @@ class BulletRenderer(private var context: Context)  {
         shader.useProgram()
 
         when (data.texture) {
-            BulletTextures.pellet -> pellet.setTexture()
-            BulletTextures.standard -> standard.setTexture()
+            BulletTextures.Pellet -> pellet.setTexture()
+            BulletTextures.Standard -> standard.setTexture()
             else -> {}
         }
 

@@ -25,10 +25,13 @@ class BlockRenderer(private var context: Context) {
     private lateinit var p: Mat4
     private lateinit var v: Mat4
 
-    private val blockGeometry = floatArrayOf(-0.5f, 0.5f,
-        0.5f, 0.5f,
-        0.5f, -0.5f,
-        -0.5f, -0.5f)
+    private val blockGeometry =
+        floatArrayOf(
+            -0.5f, 0.5f,
+            0.5f, 0.5f,
+            0.5f, -0.5f,
+            -0.5f, -0.5f
+        )
 
     private var shader = Shader(context, R.raw.block_vertex_shader, R.raw.block_fragment_shader, blockGeometry, 2, "vPosition")
 

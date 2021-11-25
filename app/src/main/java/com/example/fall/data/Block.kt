@@ -16,6 +16,3 @@ enum class BlockTextureTypes {
     Floor2,
     Floor3
 }
-
-//TODO
-// Themes for different levels

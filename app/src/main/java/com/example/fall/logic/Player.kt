@@ -7,9 +7,8 @@ import com.example.fall.data.PlayerData
 import com.example.fall.graphics.Camera
 import com.example.fall.graphics.opengl.Shader
 
-abstract class Player(private var context: Context) {
-    protected lateinit var texture: Texture
-    protected lateinit var shader: Shader
+abstract class Player(private var context: Context) : Creature() {
+    protected var speed = 100f
 
     lateinit var cam: Camera
         protected set
@@ -17,7 +16,7 @@ abstract class Player(private var context: Context) {
     lateinit var data: PlayerData
         protected set
 
-    protected fun loadTexture() {
+    override fun loadTexture() {
         texture = Texture(context, data.modelResourceId)
     }
 
@@ -29,21 +28,19 @@ abstract class Player(private var context: Context) {
             -1f, -1f
         )
 
-    protected open var coords_per_vertex = 2
+    protected open var coordsPerVertex = 2
 
-    protected fun loadShader() {
+    override fun loadShader() {
         shader = Shader(
             context,
             R.raw.player_vertex_shader,
             R.raw.player_fragment_shader,
             playerGeometry,
-            coords_per_vertex,
+            coordsPerVertex,
             "vPosition"
         )
     }
 
-    abstract fun move(game: Game, dx: Float, dy: Float)
     abstract fun rotate(rad: Float)
     abstract fun shoot(game: Game)
-    abstract fun draw()
 }

@@ -46,11 +46,24 @@ class Sprite(private var context: Context, private var resourceId: Int,
         return list
     }
 
-    fun get(x: Int, y: Int) : Texture {
-        if ((x in 0 until nrOfColumns) && (y in 0 until nrOfRows))
-            return textures[y * nrOfRows + x]
+    fun getFrameNr() : Int {
+        return textures.size
+    }
+
+    fun setTexture(x: Int, y: Int) {
+        if ((x in 0 until nrOfColumns) && (y in 0 until nrOfRows)) {
+            textures[y * nrOfRows + x].setTexture()
+            return
+        }
 
         Log.e("[Sprite]","Index out bounds! x: $x y: $y; bounds: 0 <= x < $nrOfColumns && 0 <= y < $nrOfRows")
-        return textures[0]
+        textures[0].setTexture()
+    }
+
+    fun setTexture(frameNr: Int) {
+        if (frameNr in 0 until textures.size)
+            textures[frameNr].setTexture()
+        else
+            textures[0].setTexture()
     }
 }

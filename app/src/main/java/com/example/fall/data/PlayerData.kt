@@ -6,14 +6,12 @@ data class PlayerData(
     var size: Float,
     var modelResourceId: Int,
     var currentState: PlayerStates,
+    var currentlyShooting: Boolean,
     var health: Int,
     var lookDirection: Float
 )
 
 enum class PlayerStates {
-    moving1,
-    moving2,
-    shooting1,
-    shooting2,
-    standing
+    Moving,
+    Standing
 }

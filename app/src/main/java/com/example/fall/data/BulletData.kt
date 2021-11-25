@@ -6,11 +6,12 @@ data class BulletData(
     var direction: Float,
     val size: Float,
     val speed: Float,
+    val dmg: Int,
     val texture: BulletTextures,
     var exists: Boolean
 )
 
 enum class BulletTextures {
-    standard,
-    pellet
+    Standard,
+    Pellet
 }

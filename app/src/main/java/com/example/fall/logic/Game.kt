@@ -2,18 +2,19 @@ package com.example.fall.logic
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import android.util.Log
 import com.example.fall.data.*
-import kotlin.math.cos
-import kotlin.math.sin
 
-class Game(private var context: Context) : IGraphicalGame {
+class Game(private var context: Context) : IGraphicalGame, Thread() {
     private var blockRenderer: BlockRenderer
     private var bulletRenderer: BulletRenderer
     private var map: Map
     private var blockList: MutableList<Block>
     private lateinit var visibleBlocks: MutableList<Block>
-    private var bullets = mutableListOf<BulletData>()
+    private var bullets = mutableListOf<Bullet>()
+
+    private var monster: Monster
+
+    private var run = true
 
     var player: Player
         private set
@@ -23,15 +24,43 @@ class Game(private var context: Context) : IGraphicalGame {
         glView = surface
     }
 
+    private val targetFPS = 30L
+    override fun run() {
+        val targetSFP = 1000L/targetFPS
+        var start = System.currentTimeMillis()
+        var timeItTook = 0L
+
+        while (run) {
+            timeItTook = System.currentTimeMillis() - start
+            if (timeItTook == 0L) timeItTook = 1L
+            //Do stuff
+            //----------------
+            update(timeItTook)
+            render()
+            glView?.requestRender()
+            //----------------
+            sleep(targetSFP - timeItTook)
+            start = System.currentTimeMillis()
+        }
+    }
+
+    private fun update(timeInMs: Long) {
+        stepBullets(timeInMs)
+        player.update(timeInMs)
+    }
+
     init {
         map = Map(500,500, 3f)
         player = PistolPlayer(context, map.getStartingX(), map.getStartingY())
+        monster = MeleeMonster(context, map.getStartingX(), map.getStartingY(), 0f)
         blockList = map.getMap()
 
         blockRenderer = BlockRenderer(context)
         bulletRenderer = BulletRenderer(context)
 
         blockRenderer.setViewProj(player.cam.getV(), player.cam.getP())
+
+        this.start()
     }
 
     override fun setCameraSize(width: Float, height: Float) {
@@ -46,7 +75,9 @@ class Game(private var context: Context) : IGraphicalGame {
     }
 
     override fun render() {
-        stepBullets()
+        monster.setViewProj(player.cam.getV(), player.cam.getP())
+        monster.draw()
+
         rendermap()
         renderBullets()
         renderplayer()
@@ -69,48 +100,30 @@ class Game(private var context: Context) : IGraphicalGame {
         val listCopy = bullets.toMutableList()
 
         for (b in listCopy) {
-            bulletRenderer.draw(b)
+            bulletRenderer.draw(b.getData())
         }
     }
 
-    private fun stepBullets() {
+    private fun stepBullets(timeMs: Long) {
         bulletRenderer.setViewProj(player.cam.getV(), player.cam.getP())
 
         // To avoid concurrent modifications
         val listCopy = bullets.toMutableList()
 
         for (b in listCopy) {
-            b.posX += cos(b.direction) * b.speed
-            b.posY += sin(b.direction) * b.speed
-
-            if (!map.getBlockAt(b.posX, b.posY).passable)
-                b.exists = false
+            b.update(timeMs)
+            if (!map.getBlockAt(b.getPosX(), b.getPosY()).passable)
+                b.setExists(false)
         }
 
-        bullets.removeAll { b -> !b.exists }
+        bullets.removeAll { b -> !b.getExists() }
     }
 
     fun getVisibleBlocks() : MutableList<Block> {
         return visibleBlocks
     }
 
-    fun addBullet(bullet: BulletData) {
+    fun addBullet(bullet: Bullet) {
         bullets.add(bullet)
     }
-
-    /*private var FPS = 30
-    private var spf = 1000.0 / 30
-    private var run = true
-    fun mainloop() {
-        while (run) {
-            val start = System.currentTimeMillis()
-            glView?.requestRender()
-            val timeItTook = System.currentTimeMillis() - start
-            Log.i("[LOOG]", "Time it took: $timeItTook -> FPS = ${1000.0 / timeItTook}")
-            //Thread.sleep(spf.toLong() - timeItTook)
-            Thread.sleep(
-                if (spf.toLong() - timeItTook <= 0) 20L else spf.toLong() - timeItTook
-            )
-        }
-    }*/
 }
