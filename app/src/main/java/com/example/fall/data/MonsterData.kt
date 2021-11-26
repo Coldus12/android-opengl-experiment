@@ -8,7 +8,8 @@ data class MonsterData(
     var currentState: MonsterStates,
     var lookDirection: Float,
     var health: Int,
-    var dmg: Int
+    var dmg: Int,
+    var alive: Boolean
 )
 
 enum class MonsterStates {

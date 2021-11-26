@@ -10,6 +10,7 @@ abstract class Creature : Updateable {
     protected open fun loadTexture() {}
     protected open fun loadShader() {}
 
+    open fun takeDamage(dmg: Int) {}
     abstract fun move(game: Game, dx: Float = 0f, dy: Float = 0f)
     abstract fun draw()
 }

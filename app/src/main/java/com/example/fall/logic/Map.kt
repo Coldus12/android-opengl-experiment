@@ -11,6 +11,7 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
     private var height = n
 
     private var data = mutableListOf<Block>()
+    private var passableBlocks = mutableListOf<Block>()
     private var binary = BooleanArray(m*n)
 
     private var random: Random = Random
@@ -94,23 +95,26 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
 
                 when (random.nextInt(0,2)) {
                     0 -> {
-                        if (block.passable)
+                        if (block.passable) {
                             block.type = BlockTextureTypes.Floor1
-                        else
+                            passableBlocks.add(block)
+                        } else
                             block.type = BlockTextureTypes.Wall1
                     }
 
                     1 -> {
-                        if (block.passable)
+                        if (block.passable) {
                             block.type = BlockTextureTypes.Floor2
-                        else
+                            passableBlocks.add(block)
+                        } else
                             block.type = BlockTextureTypes.Wall2
                     }
 
                     2 -> {
-                        if (block.passable)
+                        if (block.passable) {
                             block.type = BlockTextureTypes.Floor3
-                        else
+                            passableBlocks.add(block)
+                        } else
                             block.type = BlockTextureTypes.Wall3
                     }
 
@@ -170,6 +174,10 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         }
 
         return ret
+    }
+
+    fun getPassableBlocks() : MutableList<Block> {
+        return passableBlocks
     }
 
     fun getStartingX(): Float {

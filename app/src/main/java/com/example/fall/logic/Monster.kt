@@ -8,7 +8,7 @@ import com.example.fall.graphics.opengl.Texture
 import com.example.fall.math.Mat4
 
 abstract class Monster(private var context: Context) : Creature() {
-    protected var speed = 10f
+    protected var speed = 5f
 
     protected open lateinit var p: Mat4
     protected open lateinit var v: Mat4
@@ -38,13 +38,16 @@ abstract class Monster(private var context: Context) : Creature() {
     override fun loadShader() {
         shader = Shader(
             context,
-            R.raw.standard_vertex_shader,
-            R.raw.standard_fragment_shader,
+            R.raw.monster_vertex_shader,
+            R.raw.monster_fragment_shader,
             monsterGeometry,
             coordsPerVertex,
             "vPosition"
         )
     }
 
+    abstract fun isAlive() : Boolean
+    abstract fun doesBulletHitIt(bullet: Bullet) : Boolean
+    abstract fun setGameRef(game: Game)
     abstract fun attack(player: Player)
 }

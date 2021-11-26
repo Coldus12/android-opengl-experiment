@@ -8,7 +8,7 @@ import com.example.fall.graphics.Camera
 import com.example.fall.graphics.opengl.Shader
 
 abstract class Player(private var context: Context) : Creature() {
-    protected var speed = 100f
+    protected var speed = 10f
 
     lateinit var cam: Camera
         protected set
@@ -30,6 +30,10 @@ abstract class Player(private var context: Context) : Creature() {
 
     protected open var coordsPerVertex = 2
 
+    override fun takeDamage(dmg: Int) {
+        data.health -= dmg
+    }
+
     override fun loadShader() {
         shader = Shader(
             context,
@@ -41,6 +45,8 @@ abstract class Player(private var context: Context) : Creature() {
         )
     }
 
+    abstract fun getPosX() : Float
+    abstract fun getPosY() : Float
     abstract fun rotate(rad: Float)
     abstract fun shoot(game: Game)
 }

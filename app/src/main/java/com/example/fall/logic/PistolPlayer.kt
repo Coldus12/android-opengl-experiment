@@ -1,6 +1,7 @@
 package com.example.fall.logic
 
 import android.content.Context
+import android.util.Log
 import com.example.fall.R
 import com.example.fall.data.*
 import com.example.fall.graphics.Animation
@@ -131,7 +132,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         data.posY,
         data.lookDirection,
         0.3f,
-        120f,
+        12f,
         5,
         BulletTextures.Standard,
         true
@@ -202,5 +203,13 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
     override fun update(timeInMs: Long) {
         updatePosition(timeInMs)
         updateShotsFired(timeInMs)
+    }
+
+    override fun getPosX() : Float {
+        return data.posX
+    }
+
+    override fun getPosY() : Float {
+        return data.posY
     }
 }
