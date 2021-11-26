@@ -1,15 +1,18 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import android.content.Context
 import android.util.Log
 import com.example.fall.R
 import com.example.fall.data.*
-import com.example.fall.graphics.Animation
-import com.example.fall.graphics.Camera
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
+import com.example.fall.game.graphics.Animation
+import com.example.fall.game.graphics.Camera
+import com.example.fall.game.math.Mat4
+import com.example.fall.game.math.Vec4
 
 class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Float) : Player(context) {
+    private var healthBar: HealthBar
+    private var maxHp = 100
+
     init {
         data = PlayerData(
             startPosX,
@@ -19,14 +22,27 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
             PlayerStates.Standing,
             false,
             100,
-            0f
+            0f,
+            1,
+            0
         )
+
+        maxHp = data.health
 
         cam = Camera(data.posX, data.posY, 1f, 1f)
         cam.zoom(70f)
 
+        healthBar = HealthBar(context)
         loadShader()
         loadAnimation()
+    }
+
+    //
+    //----------------------------------------------------------------------------------------------
+    override fun takeDamage(dmg: Int) {
+        super.takeDamage(dmg)
+        Log.i("[LOOG]","dmg ${1f - data.health.toFloat()/maxHp.toFloat()}")
+        healthBar.updateHealth(1f - data.health.toFloat()/maxHp.toFloat())
     }
 
     //
@@ -42,7 +58,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
             64
         )
 
-        animation.setTimes(5)
+        animation.setTimes(20)
     }
 
     //  Everything that's related to player movement.
@@ -122,6 +138,12 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         data.lookDirection = rad
     }
 
+    //
+    //----------------------------------------------------------------------------------------------
+    override fun isAlive(): Boolean {
+        return data.health <= 0
+    }
+
     //  Shooting with a pistol
     //----------------------------------------------------------------------------------------------
     private val RPS = 3 // Number of bullets per second is called rounds per second. Huh
@@ -176,6 +198,8 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
     //
     //----------------------------------------------------------------------------------------------
     override fun draw() {
+        healthBar.draw()
+
         val v = cam.getV()
         val p = cam.getP()
 

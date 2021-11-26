@@ -1,7 +1,7 @@
-package com.example.fall.graphics
+package com.example.fall.game.graphics
 
 import android.content.Context
-import com.example.fall.logic.Updateable
+import com.example.fall.game.logic.Updateable
 
 class Animation(private var context: Context, private var resourceId: Int,
                 private var nrOfRows: Int, private var nrOfColumns: Int,

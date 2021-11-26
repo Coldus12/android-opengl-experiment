@@ -1,11 +1,11 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import android.content.Context
 import com.example.fall.R
 import com.example.fall.data.MonsterData
-import com.example.fall.graphics.opengl.Shader
-import com.example.fall.graphics.opengl.Texture
-import com.example.fall.math.Mat4
+import com.example.fall.game.graphics.opengl.Shader
+import com.example.fall.game.graphics.opengl.Texture
+import com.example.fall.game.math.Mat4
 
 abstract class Monster(private var context: Context) : Creature() {
     protected var speed = 5f
@@ -46,6 +46,7 @@ abstract class Monster(private var context: Context) : Creature() {
         )
     }
 
+    abstract fun setScreenData(width: Int, height: Int)
     abstract fun isAlive() : Boolean
     abstract fun doesBulletHitIt(bullet: Bullet) : Boolean
     abstract fun setGameRef(game: Game)

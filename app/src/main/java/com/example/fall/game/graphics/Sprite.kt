@@ -1,10 +1,10 @@
-package com.example.fall.graphics
+package com.example.fall.game.graphics
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.example.fall.graphics.opengl.Texture
+import com.example.fall.game.graphics.opengl.Texture
 
 class Sprite(private var context: Context, private var resourceId: Int,
              private var nrOfRows: Int, private var nrOfColumns: Int,

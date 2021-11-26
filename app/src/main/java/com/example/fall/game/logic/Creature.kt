@@ -1,7 +1,7 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
-import com.example.fall.graphics.opengl.Shader
-import com.example.fall.graphics.opengl.Texture
+import com.example.fall.game.graphics.opengl.Shader
+import com.example.fall.game.graphics.opengl.Texture
 
 abstract class Creature : Updateable {
     protected lateinit var texture: Texture

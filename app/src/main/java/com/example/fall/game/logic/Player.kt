@@ -1,11 +1,11 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import android.content.Context
-import com.example.fall.graphics.opengl.Texture
+import com.example.fall.game.graphics.opengl.Texture
 import com.example.fall.R
 import com.example.fall.data.PlayerData
-import com.example.fall.graphics.Camera
-import com.example.fall.graphics.opengl.Shader
+import com.example.fall.game.graphics.Camera
+import com.example.fall.game.graphics.opengl.Shader
 
 abstract class Player(private var context: Context) : Creature() {
     protected var speed = 10f
@@ -45,6 +45,11 @@ abstract class Player(private var context: Context) : Creature() {
         )
     }
 
+    open fun addScore(score: Int) {
+        data.score += score
+    }
+
+    abstract fun isAlive() : Boolean
     abstract fun getPosX() : Float
     abstract fun getPosY() : Float
     abstract fun rotate(rad: Float)

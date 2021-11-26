@@ -8,7 +8,9 @@ data class PlayerData(
     var currentState: PlayerStates,
     var currentlyShooting: Boolean,
     var health: Int,
-    var lookDirection: Float
+    var lookDirection: Float,
+    var nrOfLevelsReached: Int,
+    var score: Int
 )
 
 enum class PlayerStates {

@@ -1,14 +1,13 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import android.content.Context
-import android.util.Log
 import com.example.fall.R
 import com.example.fall.data.Block
 import com.example.fall.data.MonsterData
 import com.example.fall.data.MonsterStates
-import com.example.fall.graphics.Animation
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
+import com.example.fall.game.graphics.Animation
+import com.example.fall.game.math.Mat4
+import com.example.fall.game.math.Vec4
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -22,7 +21,7 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
             MonsterStates.Standing,
             lookDirection,
             20,
-            20,
+            3,
             true
         )
 
@@ -30,6 +29,7 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
 
         loadShader()
         loadAnimation()
+        loadIndicator()
     }
 
     //
@@ -45,7 +45,28 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
             64
         )
 
-        animation.setTimes(2)
+        animation.setTimes(10)
+    }
+
+    // MonsterIndicator
+    //----------------------------------------------------------------------------------------------
+    private lateinit var indicator: MonsterIndicator
+    private fun loadIndicator() {
+        indicator = MonsterIndicator(context)
+    }
+
+    private fun updateIndicator() {
+        if (gameRef != null) {
+            val dx = data.posX - gameRef!!.player.getPosX()
+            val dy = data.posY - gameRef!!.player.getPosY()
+
+            val deg = atan2(dy, dx)
+            indicator.setDegree(deg)
+        }
+    }
+
+    override fun setScreenData(width: Int, height: Int) {
+        indicator.setScreenData(width, height)
     }
 
     //
@@ -62,8 +83,12 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
         if (distance <= radiuses) {
             bullet.setExists(false)
             data.health -= bulletdata.dmg
-            if (data.health <= 0)
+            if (data.health <= 0) {
                 data.alive = false
+
+                // 25 score per melee monster
+                gameRef!!.player.addScore(25)
+            }
         }
 
         return (distance <= radiuses)
@@ -160,6 +185,8 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
         nextY = sin(data.lookDirection) * speed * timeInMs / 100
 
         if (!collisionDetect(data.posX + nextX, data.posY + nextY)) {
+            animation.update(timeInMs)
+
             data.posX += nextX
             data.posY += nextY
 
@@ -235,6 +262,7 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
     //
     //----------------------------------------------------------------------------------------------
     override fun draw() {
+        indicator.draw()
         shader.useProgram()
 
         when (data.currentState) {
@@ -272,6 +300,7 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
     //
     //----------------------------------------------------------------------------------------------
     override fun update(timeInMs: Long) {
+        updateIndicator()
         updateAttacks(timeInMs)
         doSomething(timeInMs)
     }

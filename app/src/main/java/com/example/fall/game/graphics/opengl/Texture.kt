@@ -1,4 +1,4 @@
-package com.example.fall.graphics.opengl
+package com.example.fall.game.graphics.opengl
 
 import android.content.Context
 import android.graphics.Bitmap

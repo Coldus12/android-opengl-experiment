@@ -1,25 +1,26 @@
-package com.example.fall.logic
+package com.example.fall.game
 
 import android.app.Activity
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fall.databinding.ActivityMainBinding
+import com.example.fall.databinding.ActivityGameBinding
+import com.example.fall.game.logic.Game
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class MainActivity : Activity() {
+class GameActivity : Activity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityGameBinding
     private lateinit var game: Game
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val load = Load(this)
@@ -61,7 +62,7 @@ class MainActivity : Activity() {
 }
 
 // Loading the Game class
-class Load(activity: MainActivity) : ViewModel() {
+class Load(activity: GameActivity) : ViewModel() {
     init {
         viewModelScope.launch {
             var run = true

@@ -1,8 +1,9 @@
-package com.example.fall.logic
+package com.example.fall.game
 
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
+import com.example.fall.game.logic.IGraphicalGame
 
 class MyGLSurfaceView(context: Context, attrs: AttributeSet) : GLSurfaceView(context,attrs) {
     private val renderer: MyGLRenderer

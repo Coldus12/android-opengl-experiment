@@ -1,14 +1,17 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.example.fall.data.*
+import com.example.fall.game.graphics.BlockRenderer
+import com.example.fall.game.graphics.BulletRenderer
 import kotlin.math.PI
 import kotlin.random.Random
 
 class Game(private var context: Context) : IGraphicalGame, Thread() {
-    private val mapSize = 100
+    private var mapSize = 100
+    private var nrOfMonsters = 20
 
     private var blockRenderer: BlockRenderer
     private var bulletRenderer: BulletRenderer
@@ -19,6 +22,7 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
     private var monsters = mutableListOf<Monster>()
 
     private var run = true
+    private var ready = true
 
     var player: Player
         private set
@@ -37,14 +41,17 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
         while (run) {
             //Do stuff
             //----------------
-            update(timeItTook)
-            render()
-            glView?.requestRender()
-            //----------------
-            timeItTook = System.currentTimeMillis() - start
-            if (timeItTook == 0L) timeItTook = 1L
-            sleep(targetSFP - timeItTook)
-            start = System.currentTimeMillis()
+            if (ready) {
+                update(timeItTook)
+                render()
+                glView?.requestRender()
+                //----------------
+                timeItTook = System.currentTimeMillis() - start
+                if (timeItTook == 0L) timeItTook = 1L
+                if (targetSFP - timeItTook > 0)
+                    sleep(targetSFP - timeItTook)
+                start = System.currentTimeMillis()
+            }
         }
     }
 
@@ -52,13 +59,26 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
         updateMonsters(timeInMs)
         updateBullets(timeInMs)
         player.update(timeInMs)
+
+        if (monsters.size == 0)
+            nextLevel()
+
+        if (!player.isAlive())
+            gameOver()
+    }
+
+    private fun gameOver() {
+        //TODO("No score activity just yet :/")
     }
 
     init {
         map = Map(mapSize,mapSize, 3f)
+
+        Log.i("[LOOG]","startPos ${map.getStartingX()} ${map.getStartingY()}")
+
         player = PistolPlayer(context, map.getStartingX(), map.getStartingY())
         blockList = map.getMap()
-        generateMonsters(30)
+        generateMonsters(nrOfMonsters)
 
         blockRenderer = BlockRenderer(context)
         bulletRenderer = BulletRenderer(context)
@@ -115,13 +135,28 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
 
     override fun setCameraSize(width: Float, height: Float) {
         player.cam.setSize(width, height)
+        for (m in monsters)
+            m.setScreenData(width.toInt(), height.toInt())
     }
 
-    fun nextLevel() {
-        map = Map(mapSize, mapSize, 3f)
+    private fun nextLevel() {
+        ready = false
+        glView?.queueEvent {
+            nrOfMonsters += 5
+            mapSize += 5
 
-        player.data.posX = map.getStartingX()
-        player.data.posY = map.getStartingY()
+            player.data.nrOfLevelsReached++
+
+            // A thousand extra points per level
+            player.addScore(1000)
+
+            map = Map(mapSize, mapSize, 3f)
+            generateMonsters(nrOfMonsters)
+
+            player.data.posX = map.getStartingX()
+            player.data.posY = map.getStartingY()
+            ready = true
+        }
     }
 
     override fun render() {
@@ -135,8 +170,12 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
         visibleBlocks = map.getMapNear(player.data.posX, player.data.posY, 16)
         blockRenderer.setViewProj(player.cam.getV(), player.cam.getP())
 
-        for (i in visibleBlocks.indices)
-            blockRenderer.draw(visibleBlocks[i])
+        val iter = visibleBlocks.iterator()
+
+        while (iter.hasNext()) {
+            val b = iter.next()
+            blockRenderer.draw(b)
+        }
     }
 
     private fun renderplayer() {

@@ -1,4 +1,4 @@
-package com.example.fall.logic
+package com.example.fall.game.logic
 
 import com.example.fall.data.Block
 import com.example.fall.data.BlockTextureTypes

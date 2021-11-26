@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".logic.MainActivity">
+    tools:context=".game.GameActivity">
 
-    <com.example.fall.logic.MyGLSurfaceView
+    <com.example.fall.game.MyGLSurfaceView
         android:id="@+id/glView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

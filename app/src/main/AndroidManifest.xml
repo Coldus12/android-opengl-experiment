@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.fall">
-
+    package="com.example.fall" >
     <!-- Tell the system this app requires com.example.fall.OpenGL ES 3.1. -->
-    <uses-feature android:glEsVersion="0x00030001" android:required="true" />
+    <uses-feature
+        android:glEsVersion="0x00030001"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -11,11 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Fall">
+        android:theme="@style/Theme.Fall" >
         <activity
-            android:name=".logic.MainActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:name=".game.GameActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

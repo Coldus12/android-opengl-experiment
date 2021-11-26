@@ -1,4 +1,4 @@
-package com.example.fall.math
+package com.example.fall.game.math
 
 import kotlin.math.cos
 import kotlin.math.sin

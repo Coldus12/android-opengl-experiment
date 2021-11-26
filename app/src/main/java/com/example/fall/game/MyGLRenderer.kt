@@ -1,8 +1,9 @@
-package com.example.fall.logic
+package com.example.fall.game
 
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.example.fall.game.logic.IGraphicalGame
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 

@@ -1,10 +1,10 @@
-package com.example.fall.graphics.opengl
+package com.example.fall.game.graphics.opengl
 
 import android.content.Context
 import android.opengl.GLES30
 import android.util.Log
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
+import com.example.fall.game.math.Mat4
+import com.example.fall.game.math.Vec4
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.Exception
@@ -58,6 +58,23 @@ class Shader(private var context: Context) {
 
             GLES30.glDisableVertexAttribArray(it)
         }
+    }
+
+    fun updateGeometry(geometryData: FloatArray, coords_per_vertex: Int) {
+        this.coordsPerVertex = coords_per_vertex
+
+        vertexBuffer =
+            ByteBuffer.allocateDirect(geometryData.size * floatSize).run {
+                order(ByteOrder.nativeOrder())
+
+                asFloatBuffer().apply {
+                    put(geometryData)
+                    position(0)
+                }
+            }
+
+        vertexCount = geometryData.size / coords_per_vertex
+        vertexStride = coords_per_vertex * floatSize
     }
 
     fun loadGeometry(geometryData: FloatArray, coords_per_vertex: Int, name: String) {

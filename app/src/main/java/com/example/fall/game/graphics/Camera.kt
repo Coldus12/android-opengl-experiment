@@ -1,7 +1,7 @@
-package com.example.fall.graphics
+package com.example.fall.game.graphics
 
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
+import com.example.fall.game.math.Mat4
+import com.example.fall.game.math.Vec4
 
 class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
 

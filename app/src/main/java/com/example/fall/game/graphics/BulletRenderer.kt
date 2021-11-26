@@ -1,13 +1,13 @@
-package com.example.fall.logic
+package com.example.fall.game.graphics
 
 import android.content.Context
 import com.example.fall.R
 import com.example.fall.data.BulletData
 import com.example.fall.data.BulletTextures
-import com.example.fall.math.Mat4
-import com.example.fall.math.Vec4
-import com.example.fall.graphics.opengl.Shader
-import com.example.fall.graphics.opengl.Texture
+import com.example.fall.game.math.Mat4
+import com.example.fall.game.math.Vec4
+import com.example.fall.game.graphics.opengl.Shader
+import com.example.fall.game.graphics.opengl.Texture
 
 class BulletRenderer(private var context: Context)  {
     private lateinit var pellet: Texture
