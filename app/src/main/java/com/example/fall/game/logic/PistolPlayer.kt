@@ -41,7 +41,6 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
     //----------------------------------------------------------------------------------------------
     override fun takeDamage(dmg: Int) {
         super.takeDamage(dmg)
-        Log.i("[LOOG]","dmg ${1f - data.health.toFloat()/maxHp.toFloat()}")
         healthBar.updateHealth(1f - data.health.toFloat()/maxHp.toFloat())
     }
 
@@ -141,7 +140,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
     //
     //----------------------------------------------------------------------------------------------
     override fun isAlive(): Boolean {
-        return data.health <= 0
+        return data.health >= 0
     }
 
     //  Shooting with a pistol

@@ -1,8 +1,10 @@
 package com.example.fall.game.logic
 
 import android.content.Context
+import android.content.Intent
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.example.fall.GameOverActivity
 import com.example.fall.data.*
 import com.example.fall.game.graphics.BlockRenderer
 import com.example.fall.game.graphics.BulletRenderer
@@ -20,6 +22,9 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
     private lateinit var visibleBlocks: MutableList<Block>
     private var bullets = mutableListOf<Bullet>()
     private var monsters = mutableListOf<Monster>()
+
+    private var width = 0
+    private var height = 0
 
     private var run = true
     private var ready = true
@@ -68,7 +73,12 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
     }
 
     private fun gameOver() {
-        //TODO("No score activity just yet :/")
+        run = false
+        val intent = Intent(context, GameOverActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("score", player.data.score)
+        intent.putExtra("levels", player.data.nrOfLevelsReached)
+        context.startActivity(intent)
     }
 
     init {
@@ -134,9 +144,12 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
     }
 
     override fun setCameraSize(width: Float, height: Float) {
+        this.width = width.toInt()
+        this.height = height.toInt()
+
         player.cam.setSize(width, height)
         for (m in monsters)
-            m.setScreenData(width.toInt(), height.toInt())
+            m.setScreenData(this.width, this.height)
     }
 
     private fun nextLevel() {
@@ -152,6 +165,9 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
 
             map = Map(mapSize, mapSize, 3f)
             generateMonsters(nrOfMonsters)
+
+            for (m in monsters)
+                m.setScreenData(this.width, this.height)
 
             player.data.posX = map.getStartingX()
             player.data.posY = map.getStartingY()
