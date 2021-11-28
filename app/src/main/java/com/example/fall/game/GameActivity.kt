@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fall.databinding.ActivityGameBinding
 import com.example.fall.game.logic.Game
+import com.example.fall.game.logic.PlayerType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -16,12 +17,20 @@ class GameActivity : Activity() {
 
     private lateinit var binding: ActivityGameBinding
     private lateinit var game: Game
+    private lateinit var type: PlayerType
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val playerType = intent.extras?.get("playerType")
+        type = when (playerType) {
+            0 -> PlayerType.Pistol
+            1 -> PlayerType.Shotgun
+            else -> PlayerType.Pistol
+        }
 
         val load = Load(this)
     }
@@ -33,7 +42,7 @@ class GameActivity : Activity() {
 
         if (glView.getEglContInitialized()) {
             glView.queueEvent {
-                game = Game(applicationContext)
+                game = Game(applicationContext, type)
                 game.setGLView(glView)
                 glView.setGraphicalGameInterface(game)
             }

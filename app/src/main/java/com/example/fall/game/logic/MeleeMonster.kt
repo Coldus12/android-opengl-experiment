@@ -81,13 +81,15 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
         val radiuses = data.size + bulletdata.size
 
         if (distance <= radiuses) {
-            bullet.setExists(false)
-            data.health -= bulletdata.dmg
-            if (data.health <= 0) {
-                data.alive = false
+            if (isAlive()) {
+                bullet.setExists(false)
+                data.health -= bulletdata.dmg
+                if (data.health <= 0) {
+                    data.alive = false
 
-                // 25 score per melee monster
-                gameRef!!.player.addScore(25)
+                    // 25 score per melee monster
+                    gameRef!!.player.addScore(25)
+                }
             }
         }
 

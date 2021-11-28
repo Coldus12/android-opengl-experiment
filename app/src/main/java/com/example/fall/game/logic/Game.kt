@@ -11,7 +11,7 @@ import com.example.fall.game.graphics.BulletRenderer
 import kotlin.math.PI
 import kotlin.random.Random
 
-class Game(private var context: Context) : IGraphicalGame, Thread() {
+class Game(private var context: Context, type: PlayerType) : IGraphicalGame, Thread() {
     private var mapSize = 100
     private var nrOfMonsters = 20
 
@@ -86,7 +86,12 @@ class Game(private var context: Context) : IGraphicalGame, Thread() {
 
         Log.i("[LOOG]","startPos ${map.getStartingX()} ${map.getStartingY()}")
 
-        player = PistolPlayer(context, map.getStartingX(), map.getStartingY())
+        player = when(type) {
+            PlayerType.Pistol -> PistolPlayer(context, map.getStartingX(), map.getStartingY())
+            PlayerType.Shotgun -> ShotgunPlayer(context, map.getStartingX(), map.getStartingY())
+        }
+
+        player = ShotgunPlayer(context, map.getStartingX(), map.getStartingY())
         blockList = map.getMap()
         generateMonsters(nrOfMonsters)
 

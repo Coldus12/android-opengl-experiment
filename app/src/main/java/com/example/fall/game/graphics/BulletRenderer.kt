@@ -31,7 +31,7 @@ class BulletRenderer(private var context: Context)  {
     }
 
     private fun loadTexture() {
-        pellet = Texture(context, R.drawable.whatever)
+        pellet = Texture(context, R.drawable.pellet)
         standard = Texture(context, R.drawable.standardbullet)
     }
 
