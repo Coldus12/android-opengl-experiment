@@ -84,6 +84,11 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         gameRef = game
     }
 
+    override fun updatePosition(timeInMs: Long) {
+        super.updatePosition(timeInMs)
+        animation.update(timeInMs)
+    }
+
     //
     private var timeAtLastShot = System.currentTimeMillis()
     private var timeSinceLastShot = 0L

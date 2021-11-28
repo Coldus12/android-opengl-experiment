@@ -4,13 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1388888888888889" />
-        <entry key="..\:/Users/PCF112021/AndroidStudioProjects/android-opengl-experiment/app/src/main/res/layout/activity_game_over.xml" value="0.3875" />
-        <entry key="..\:/Users/PCF112021/AndroidStudioProjects/android-opengl-experiment/app/src/main/res/layout/activity_main.xml" value="0.3875" />
+        <entry key="app/src/main/res/layout/activity_choose_player.xml" value="0.3536458333333333" />
+        <entry key="app/src/main/res/layout/activity_game_over.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/player_chooser_fragment.xml" value="0.3536458333333333" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

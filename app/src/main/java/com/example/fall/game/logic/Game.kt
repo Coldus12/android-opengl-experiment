@@ -84,14 +84,11 @@ class Game(private var context: Context, type: PlayerType) : IGraphicalGame, Thr
     init {
         map = Map(mapSize,mapSize, 3f)
 
-        Log.i("[LOOG]","startPos ${map.getStartingX()} ${map.getStartingY()}")
-
         player = when(type) {
             PlayerType.Pistol -> PistolPlayer(context, map.getStartingX(), map.getStartingY())
             PlayerType.Shotgun -> ShotgunPlayer(context, map.getStartingX(), map.getStartingY())
         }
 
-        player = ShotgunPlayer(context, map.getStartingX(), map.getStartingY())
         blockList = map.getMap()
         generateMonsters(nrOfMonsters)
 

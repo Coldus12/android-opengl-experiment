@@ -17,7 +17,7 @@ class MainActivity : Activity() {
 
         setContentView(binding.root)
         binding.startButton.setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java))
+            startActivity(Intent(this, ChoosePlayerActivity::class.java))
         }
     }
 }

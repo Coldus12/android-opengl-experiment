@@ -2,6 +2,7 @@ package com.example.fall.game
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fall.databinding.ActivityGameBinding
