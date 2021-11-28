@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fall">
         <activity
+            android:name=".CemeteryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChoosePlayerActivity"
             android:exported="false" />
         <activity

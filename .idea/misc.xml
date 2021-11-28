@@ -4,9 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1388888888888889" />
+        <entry key="app/src/main/res/layout/activity_cemetery.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/activity_choose_player.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/activity_game_over.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/item_player.xml" value="0.3536458333333333" />
         <entry key="app/src/main/res/layout/player_chooser_fragment.xml" value="0.3536458333333333" />
       </map>
     </option>

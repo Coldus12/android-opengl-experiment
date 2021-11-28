@@ -9,4 +9,7 @@
     <string name="char_name">Name: %s</string>
     <string name="char_weapon">Weapon: %s</string>
     <string name="start_char">Start</string>
+    <string name="cemetery_name">Name</string>
+    <string name="cemetery_score">Score</string>
+    <string name="item_score">%d</string>
 </resources>

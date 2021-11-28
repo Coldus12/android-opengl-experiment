@@ -19,5 +19,9 @@ class MainActivity : Activity() {
         binding.startButton.setOnClickListener {
             startActivity(Intent(this, ChoosePlayerActivity::class.java))
         }
+
+        binding.cemeteryButton.setOnClickListener {
+            startActivity(Intent(this, CemeteryActivity::class.java))
+        }
     }
 }

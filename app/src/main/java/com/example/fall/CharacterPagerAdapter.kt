@@ -6,9 +6,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 class CharacterPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int): Fragment = when(position){
-        0 -> ChoosePlayerFragment("Jason Bourne", "Pistol", 0)
+        0 -> ChoosePlayerFragment("Denzel", "Pistol", 0)
         1 -> ChoosePlayerFragment("Justin", "Shotgun", 1)
-        else -> ChoosePlayerFragment("Jason Bourne", "Pistol", 0)
+        else -> ChoosePlayerFragment("Denzel", "Pistol", 0)
     }
 
     override fun getCount() : Int = NUM_PAGES

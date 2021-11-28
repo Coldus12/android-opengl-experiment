@@ -72,12 +72,17 @@ class Game(private var context: Context, type: PlayerType) : IGraphicalGame, Thr
             gameOver()
     }
 
+    private lateinit var db: DeadPlayersDB
     private fun gameOver() {
         run = false
         val intent = Intent(context, GameOverActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("score", player.data.score)
         intent.putExtra("levels", player.data.nrOfLevelsReached)
+
+        db = DeadPlayersDB.getDatabase(context)
+        db.playerDao().insert(player.data)
+
         context.startActivity(intent)
     }
 
