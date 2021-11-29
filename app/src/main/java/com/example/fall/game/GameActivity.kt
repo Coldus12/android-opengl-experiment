@@ -14,6 +14,11 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+// GameActivity - the activity responsible for the game
+//--------------------------------------------------------------------------------------------------
+/** The activity which contains the surfaceView on which everything is drawn,
+ *  the controller views, which with which the player moves/shoots, and the game itself.
+ * */
 class GameActivity : Activity() {
 
     private lateinit var binding: ActivityGameBinding
@@ -36,6 +41,8 @@ class GameActivity : Activity() {
         val load = Load(this)
     }
 
+    /** Initiates/creates the game if the application has a valid OpenGL context.
+     * */
     fun initGame() : Boolean {
         val glView = binding.glView
         val jMove = binding.joystickMove
@@ -72,6 +79,10 @@ class GameActivity : Activity() {
 }
 
 // Loading the Game class
+//--------------------------------------------------------------------------------------------------
+/** Loads the game (and all of its shaders and textures) once the application has
+ * a valid OpenGL context.
+ * */
 class Load(activity: GameActivity) : ViewModel() {
     init {
         viewModelScope.launch {

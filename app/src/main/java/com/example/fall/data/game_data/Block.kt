@@ -1,4 +1,4 @@
-package com.example.fall.data
+package com.example.fall.data.game_data
 
 data class Block(
     var posX: Float,

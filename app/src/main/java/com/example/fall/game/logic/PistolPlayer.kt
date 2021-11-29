@@ -1,15 +1,21 @@
 package com.example.fall.game.logic
 
 import android.content.Context
-import android.util.Log
 import com.example.fall.R
-import com.example.fall.data.*
+import com.example.fall.data.game_data.BulletData
+import com.example.fall.data.game_data.BulletTextures
+import com.example.fall.data.persistent_data.PlayerData
+import com.example.fall.data.persistent_data.PlayerStates
 import com.example.fall.game.graphics.Animation
 import com.example.fall.game.graphics.Camera
 import com.example.fall.game.math.Mat4
 import com.example.fall.game.math.Vec4
 
+// PistolPlayer
+//--------------------------------------------------------------------------------------------------
 class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Float) : Player(context) {
+    // Data
+    //----------------------------------------------------------------------------------------------
     private var healthBar: HealthBar
     private var maxHp = 100
 
@@ -37,14 +43,12 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         loadAnimation()
     }
 
-    //
-    //----------------------------------------------------------------------------------------------
     override fun takeDamage(dmg: Int) {
         super.takeDamage(dmg)
         healthBar.updateHealth(1f - data.health.toFloat()/maxHp.toFloat())
     }
 
-    //
+    // Loading the animation
     //----------------------------------------------------------------------------------------------
     private lateinit var animation: Animation
     private fun loadAnimation() {
@@ -60,11 +64,10 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         animation.setTimes(20)
     }
 
-    //  Shooting with a pistol
+    //  Everything related to shooting with a pistol
     //----------------------------------------------------------------------------------------------
-    private val RPS = 3 // Number of bullets per second is called rounds per second. Huh
+    private val RPS = 6 // Number of bullets per second is called rounds per second. Huh
     private val timeBetweenRounds = 1000L / RPS
-
     private val bulletTemplate = BulletData(
         data.posX,
         data.posY,
@@ -76,8 +79,11 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         true
     )
 
-    //
     private lateinit var gameRef: Game
+
+    /** Sets the player's state to shooting.
+     * @param game The game
+     * */
     override fun shoot(game: Game) {
         data.currentlyShooting = true
 
@@ -89,11 +95,22 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         animation.update(timeInMs)
     }
 
-    //
-    private var timeAtLastShot = System.currentTimeMillis()
-    private var timeSinceLastShot = 0L
+    private var timeSinceLastShot = timeBetweenRounds + 1
+
+    /** If the player tried to shoot this is the function that is going to
+     *  "spawn" in the bullets and progress them if necessary.
+     *
+     *  More detail:
+     *  If the time since last shot is more than the time between shots, and the
+     *  player is in a shooting state, then bullet(s) will be spawned in. And the player
+     *  shall transition into a non-shooting state. If the "timeInMs" is a multiple of the time
+     *  between shots, then this function will shoot bullets as if the player tried to shoot
+     *  throughout that time.
+     *
+     *  @param timeInMs time since this function's last run
+     * */
     private fun updateShotsFired(timeInMs: Long) {
-        timeSinceLastShot = System.currentTimeMillis() - timeAtLastShot
+        timeSinceLastShot += timeInMs
 
         if (timeSinceLastShot >= timeBetweenRounds && data.currentlyShooting) {
             data.currentlyShooting = false
@@ -112,11 +129,11 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
                 gameRef.addBullet(bullet)
             }
 
-            timeAtLastShot = System.currentTimeMillis()
+            timeSinceLastShot = 0L
         }
     }
 
-    //
+    // Drawing the player
     //----------------------------------------------------------------------------------------------
     override fun draw() {
         healthBar.draw()
@@ -145,6 +162,8 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
         shader.drawGeometry()
     }
 
+    // Updating the position and the shots
+    //----------------------------------------------------------------------------------------------
     override fun update(timeInMs: Long) {
         updatePosition(timeInMs)
         updateShotsFired(timeInMs)

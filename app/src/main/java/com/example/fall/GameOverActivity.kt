@@ -2,13 +2,17 @@ package com.example.fall
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.example.fall.databinding.ActivityGameOverBinding
 
+// GameOverActivity
+//--------------------------------------------------------------------------------------------------
+/** A simple Game Over screen which shows the final score, and the number of levels reached.
+ *  For this activity to show the correct score and number of levels it needs extra data from the
+ *  intent. The extra data required is as follows (string, value):
+ *  ("score", actualScore) ; ("levels", nrOfLevels)
+ * */
 class GameOverActivity : Activity() {
-
     private lateinit var binding: ActivityGameOverBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

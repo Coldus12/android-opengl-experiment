@@ -1,4 +1,4 @@
-package com.example.fall.data
+package com.example.fall.data.persistent_data
 
 import android.content.Context
 import androidx.room.Database
@@ -15,7 +15,7 @@ abstract class DeadPlayersDB : RoomDatabase() {
                 applicationContext,
                 DeadPlayersDB::class.java,
                 "dead_players"
-            ).build();
+            ).build()
         }
     }
 }

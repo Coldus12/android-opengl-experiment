@@ -1,4 +1,4 @@
-package com.example.fall.data
+package com.example.fall.data.persistent_data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -20,12 +20,17 @@ data class PlayerData(
     @ColumnInfo(name = "levels") var nrOfLevelsReached: Int,
     @ColumnInfo(name = "score") var score: Int
 ) {
+    /** Constructor where only the not ignored fields need to be set, so that Room can load data
+     * into this class.
+     * */
     constructor(
         modelResourceId: Int,
         nrOfLevelsReached: Int,
         score: Int
     ) : this(0,0f,0f,0f,modelResourceId, PlayerStates.Moving, false, 0, 0f, nrOfLevelsReached, score)
 
+    /** Constructor without the need to set the id, which is only needed for database purposes.
+     * */
     constructor(
         posX: Float,
         posY: Float,

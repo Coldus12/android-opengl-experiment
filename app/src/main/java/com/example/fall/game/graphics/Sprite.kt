@@ -6,6 +6,16 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import com.example.fall.game.graphics.opengl.Texture
 
+// Sprite
+//--------------------------------------------------------------------------------------------------
+/** An image made up of smaller images ordered in columns/rows.
+ * @param context context - required for loading resources
+ * @param resourceId the id of the drawable resource
+ * @param nrOfRows number of rows
+ * @param nrOfColumns number of columns
+ * @param spriteWidth the width of the individual smaller images
+ * @param spriteHeight the height of the individual smaller images
+ * */
 class Sprite(private var context: Context, private var resourceId: Int,
              private var nrOfRows: Int, private var nrOfColumns: Int,
              private var spriteWidth: Int, private var spriteHeight: Int) {
@@ -23,6 +33,9 @@ class Sprite(private var context: Context, private var resourceId: Int,
         }
     }
 
+    /** Loads the bitmap and then cuts it up into the smaller images and stores it in a list.
+     * @return the list containing the smaller bitmaps
+     * */
     private fun getSubBmps() : MutableList<Bitmap> {
         val options = BitmapFactory.Options()
         options.inScaled = false
@@ -46,10 +59,16 @@ class Sprite(private var context: Context, private var resourceId: Int,
         return list
     }
 
+    /** @return number of frames/smaller images in this sprite
+     * */
     fun getFrameNr() : Int {
         return textures.size
     }
 
+    /** Sets the texture at the given x,y coordinate
+     * @param x img location in a row (which column is the picture in)
+     * @param y img location in a column (which row is the picture in)
+     * */
     fun setTexture(x: Int, y: Int) {
         if ((x in 0 until nrOfColumns) && (y in 0 until nrOfRows)) {
             textures[y * nrOfRows + x].setTexture()
@@ -60,6 +79,9 @@ class Sprite(private var context: Context, private var resourceId: Int,
         textures[0].setTexture()
     }
 
+    /** Sets the texture at the given location in the stored texture list
+     * @param frameNr texture location
+     * */
     fun setTexture(frameNr: Int) {
         if (frameNr in 0 until textures.size)
             textures[frameNr].setTexture()

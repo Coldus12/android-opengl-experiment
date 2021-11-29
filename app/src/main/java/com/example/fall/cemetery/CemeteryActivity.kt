@@ -1,12 +1,12 @@
-package com.example.fall
+package com.example.fall.cemetery
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fall.data.DeadPlayersDB
-import com.example.fall.data.PlayerData
+import com.example.fall.R
+import com.example.fall.data.persistent_data.DeadPlayersDB
+import com.example.fall.data.persistent_data.PlayerData
 import com.example.fall.databinding.ActivityCemeteryBinding
 import kotlin.concurrent.thread
 
@@ -42,7 +42,6 @@ class CemeteryActivity : AppCompatActivity(), DeadPlayerAdapter.OnPlayerSelected
     }
 
     override fun onPlayerSelected(item: PlayerData) {
-        Log.i("[LOOG]","HERE MOTHERFUCKER")
         val intent = Intent(this@CemeteryActivity, DetailsActivity::class.java)
 
         val name = when (item.modelResourceId) {

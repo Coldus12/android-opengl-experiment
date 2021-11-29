@@ -1,10 +1,18 @@
 package com.example.fall.game.logic
 
-import com.example.fall.data.Block
-import com.example.fall.data.BlockTextureTypes
+import com.example.fall.data.game_data.Block
+import com.example.fall.data.game_data.BlockTextureTypes
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+// Map
+//--------------------------------------------------------------------------------------------------
+/** The map of the game.
+ * Generates a map with the given width, height, and blocksize.
+ * @param m width of the map
+ * @param n height of the map
+ * @param blockSize size of the blocks on the map
+ * */
 class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
 
     private var width = m
@@ -24,6 +32,11 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         generateBlockData()
     }
 
+    /** Generates a 2D array of booleans which represent the map. If the boolean is false, then
+     * there at that position there will be a solid block, however if the boolean is true, then
+     * that means that at that position there will be a passableBlock, a floor.
+     * Also generates the starting position of the player.
+     * */
     private fun generateBinaryData() {
         // Setting the seed
         var startX = random.nextInt(width/4,3*width/4)
@@ -82,6 +95,10 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         //printBinary()
     }
 
+    /** Once the binary generation is done, the block generation may begin.
+     * The blocks are generated with the given size and they are placed at a position
+     * corresponding to their position in the binary array, and their size.
+     * */
     private fun generateBlockData() {
         for (i in 0 until width) {
             for (j in 0 until height) {
@@ -126,12 +143,19 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         }
     }
 
+    /** @return the block at the given "binary" position - i.e.: place in the array
+     * */
     private fun getBlock(i: Int, j: Int): Block {
         return if (i in 0 until width && j in 0 until height)
             data[j * width + i]
         else data[0]
     }
 
+    /** Returns the block at the given world coordinates
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return the block at the given world coordinates
+     * */
     fun getBlockAt(x: Float, y: Float): Block {
         val iX = (x / blockSize).roundToInt()
         val iY = (y / blockSize).roundToInt()
@@ -155,6 +179,12 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         return data
     }
 
+    /** Gets a "sample" of the map with a given size around a given point (in world coordinates)
+     * @param posX x coordinate
+     * @param posY y coordinate
+     * @param sampleSize size of the sample (measured in blocks both in the x, and y direction)
+     * @return the requested part of the map
+     * */
     fun getMapNear(posX: Float, posY: Float, sampleSize: Int): MutableList<Block> {
         val ret = mutableListOf<Block>()
 
@@ -176,6 +206,8 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         return ret
     }
 
+    /** @return all the passable blocks
+     * */
     fun getPassableBlocks() : MutableList<Block> {
         return passableBlocks
     }

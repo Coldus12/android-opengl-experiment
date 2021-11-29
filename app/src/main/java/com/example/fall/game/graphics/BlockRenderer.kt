@@ -3,12 +3,17 @@ package com.example.fall.game.graphics
 import android.content.Context
 import com.example.fall.game.graphics.opengl.Texture
 import com.example.fall.R
-import com.example.fall.data.Block
-import com.example.fall.data.BlockTextureTypes
+import com.example.fall.data.game_data.Block
+import com.example.fall.data.game_data.BlockTextureTypes
 import com.example.fall.game.math.Mat4
 import com.example.fall.game.math.Vec4
 import com.example.fall.game.graphics.opengl.Shader
 
+// BulletRenderer
+//--------------------------------------------------------------------------------------------------
+/** The class responsible for rendering the blocks of the map
+ * @param context context - required for loading texture resources
+ * */
 class BlockRenderer(private var context: Context) {
     private lateinit var wall1: Texture
     private lateinit var wall2: Texture

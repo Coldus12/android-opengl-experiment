@@ -12,6 +12,11 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
+// Shader class
+//--------------------------------------------------------------------------------------------------
+/** OpenGL shader class.
+ * Loads the shader resources, compiles them, runs them. Capable of displaying a given geometry.
+ * */
 class Shader(private var context: Context) {
 
     private var mProgram = -1
@@ -27,19 +32,31 @@ class Shader(private var context: Context) {
     private var vertexStride = 0
     private var vertexCount = 0
 
+    /** Loads and initializes a shader with the given data.
+     * @param context Application context
+     * @param vertex the resource id for the vertex shader
+     * @param fragment the resource id for the fragment shader
+     * @param geometryData a floatArray containing the geometry
+     * @param coords_per_vertex how many floats make up a vertex in the given geometryData
+     * @param geometryName what attribute (name?) to load the geometry data into
+     * */
     constructor(context: Context, vertex: Int, fragment: Int, geometryData: FloatArray, coords_per_vertex: Int, geometryName: String) : this(context) {
         loadShaderCode(vertex, fragment)
         loadGeometry(geometryData, coords_per_vertex, geometryName)
     }
-
     fun getProgramId(): Int {
         return mProgram
     }
 
+    /** Sets the shader to be used. After this function call uniform calls, and drawGeometry calls,
+     * and even texture "set"-s can be called.
+     * */
     fun useProgram() {
         GLES30.glUseProgram(mProgram)
     }
 
+    /** Draws the geometry stored in the provided attribute.
+     * */
     fun drawGeometry() {
         useProgram()
         GLES30.glGetAttribLocation(mProgram, geometryName).also {
@@ -60,6 +77,10 @@ class Shader(private var context: Context) {
         }
     }
 
+    /** Updates the geometry data.
+     * @param geometryData the newer geometry data
+     * @param coords_per_vertex how many floats make up a vertex in the new geometry data
+     * */
     fun updateGeometry(geometryData: FloatArray, coords_per_vertex: Int) {
         this.coordsPerVertex = coords_per_vertex
 
@@ -77,6 +98,11 @@ class Shader(private var context: Context) {
         vertexStride = coords_per_vertex * floatSize
     }
 
+    /** Loads the provided geometry into the provided attribute.
+     * @param geometryData geometry data
+     * @param coords_per_vertex how many floats make up a vertex
+     * @param name name of the attribute
+     * */
     fun loadGeometry(geometryData: FloatArray, coords_per_vertex: Int, name: String) {
         this.coordsPerVertex = coords_per_vertex
 
@@ -109,6 +135,10 @@ class Shader(private var context: Context) {
         geometryName = name
     }
 
+    /** Loads a vector into the shader onto the GPU to the given id.
+     * @param vec vector to be loaded onto the GPU
+     * @param id the id of the uniform vector
+     * */
     fun setUniformVec(vec: Vec4, id: String) {
         val location = getLocation(id)
         val data = vec.getData()
@@ -117,6 +147,10 @@ class Shader(private var context: Context) {
             GLES30.glUniform4f(location, data[0], data[1], data[2], data[3])
     }
 
+    /** Loads a matrix into the shader onto the GPU to the given id.
+     * @param mat the matrix to be loaded onto the GPU
+     * @param id the id of the uniform matrix
+     * */
     fun setUniformMat(mat: Mat4, id: String) {
         val location = getLocation(id)
         if (location != -1)
@@ -131,6 +165,10 @@ class Shader(private var context: Context) {
         else -1
     }
 
+    /** Compiles the shader.
+     * @param type type of the shader (I.E.: vertex/fragment)
+     * @param shaderCode the code of the shader
+     * */
     private fun loadShader(type: Int, shaderCode: String): Int {
         return  GLES30.glCreateShader(type).also { shader ->
             GLES30.glShaderSource(shader, shaderCode)
@@ -138,12 +176,19 @@ class Shader(private var context: Context) {
         }
     }
 
+    /** Loads the shader's code from resources
+     * @param vsResourceId vertex shader resource id
+     * @param fsResourceId fragment shdaer resource id
+     * */
     private fun loadShaderCode(vsResourceId: Int, fsResourceId: Int) {
         vertexShaderCode = loadString(vsResourceId)
         fragmentShaderCode = loadString(fsResourceId)
         loaded = true
     }
 
+    /** Loads the string with the given resource id
+     * @param resourceId id of the string to be loaded
+     * */
     private fun loadString(resourceId: Int) : String {
         val inputStream = context.resources.openRawResource(resourceId)
         val reader = InputStreamReader(inputStream)

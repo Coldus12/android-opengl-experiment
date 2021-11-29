@@ -1,10 +1,13 @@
-package com.example.fall
+package com.example.fall.player_picker
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.fall.databinding.ActivityChoosePlayerBinding
 
+// Player picker activity
+//--------------------------------------------------------------------------------------------------
+/** Simple activity with the character pager on it.
+ * */
 class ChoosePlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChoosePlayerBinding
 

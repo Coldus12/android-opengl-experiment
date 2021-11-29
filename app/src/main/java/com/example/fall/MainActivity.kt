@@ -2,11 +2,21 @@ package com.example.fall
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.fall.cemetery.CemeteryActivity
 import com.example.fall.databinding.ActivityMainBinding
-import com.example.fall.game.GameActivity
+import com.example.fall.player_picker.ChoosePlayerActivity
 
+
+// The main activity of the game.
+//--------------------------------------------------------------------------------------------------
+/** The main activity of the game.
+ *  This activity has 2 buttons, a "start" button, and a "cemetery" button.
+ *  The first one takes us to the character picker activity, where after selecting a character
+ *  the actual game shall start.
+ *  The second button transitions us to the CemeteryActivity, where all the dead characters are
+ *  listed and shown in a recyclerView.
+ * */
 class MainActivity : Activity() {
     private lateinit var binding: ActivityMainBinding
 

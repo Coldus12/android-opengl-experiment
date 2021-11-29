@@ -3,6 +3,8 @@ package com.example.fall.game.graphics
 import com.example.fall.game.math.Mat4
 import com.example.fall.game.math.Vec4
 
+// Camera
+//--------------------------------------------------------------------------------------------------
 class Camera(posX: Float, posY: Float, cWidth: Float, cHeight: Float) {
 
     private var centerX: Float

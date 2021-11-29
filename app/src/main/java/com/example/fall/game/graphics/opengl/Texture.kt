@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import android.opengl.GLUtils
 
+// OpenGL Texture
+//--------------------------------------------------------------------------------------------------
+/** The texture class, to load bitmaps from the resources, and to use them in OpenGL.
+ * */
 class Texture() {
 
     private var mTexturehandle: Int = -1
@@ -18,11 +22,18 @@ class Texture() {
         loadTexture(bmp)
     }
 
+    /** Sets the texture to be active (this should be called only once a shader's useProgram() has
+     * been called. After that the geometry stored in the shader [in this context i mean the class]
+     * shall use this texture.
+     * */
     fun setTexture() {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexturehandle)
     }
 
+    /** Loads the bitmap into texture onto the GPU
+     * @param bmp the bitmap
+     * */
     private fun loadTexture(bmp: Bitmap) {
         val textureHandle = IntArray(1)
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0)

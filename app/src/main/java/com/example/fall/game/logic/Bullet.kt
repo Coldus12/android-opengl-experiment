@@ -1,9 +1,15 @@
 package com.example.fall.game.logic
 
-import com.example.fall.data.BulletData
+import com.example.fall.data.game_data.BulletData
 import kotlin.math.cos
 import kotlin.math.sin
 
+// Bullet
+//--------------------------------------------------------------------------------------------------
+/** A wrapper around the data class.
+ *  The only useful property of this class is that it has an update function.
+ *  @param data the actualy bullet data
+ * */
 class Bullet(private var data: BulletData) : Updateable {
 
     fun getData() : BulletData {

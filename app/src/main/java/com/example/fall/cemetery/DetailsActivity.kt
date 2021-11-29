@@ -1,9 +1,13 @@
-package com.example.fall
+package com.example.fall.cemetery
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.fall.R
 import com.example.fall.databinding.ActivityDetailsBinding
 
+/** Simple activity where the data of the character selected at the cemetery activity can be
+ * shown.
+ * */
 class DetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsBinding
 

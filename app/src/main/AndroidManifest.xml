@@ -14,13 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fall">
         <activity
-            android:name=".DetailsActivity"
+            android:name=".cemetery.DetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".CemeteryActivity"
+            android:name=".cemetery.CemeteryActivity"
             android:exported="false" />
         <activity
-            android:name=".ChoosePlayerActivity"
+            android:name=".player_picker.ChoosePlayerActivity"
             android:exported="false" />
         <activity
             android:name=".GameOverActivity"

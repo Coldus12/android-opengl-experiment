@@ -1,10 +1,10 @@
-package com.example.fall
+package com.example.fall.cemetery
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fall.data.PlayerData
+import com.example.fall.R
+import com.example.fall.data.persistent_data.PlayerData
 import com.example.fall.databinding.ItemPlayerBinding
 
 class DeadPlayerAdapter(private val listener: OnPlayerSelectedListener) :
