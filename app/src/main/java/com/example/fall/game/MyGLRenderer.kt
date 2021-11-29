@@ -23,7 +23,7 @@ class MyGLRenderer() : GLSurfaceView.Renderer {
      * (such as the "background color")
      * */
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
-        GLES30.glClearColor(0.5f, 0.3f, 1.0f, 1.0f)
+        GLES30.glClearColor(0.204f, 0.11f, 0.004f, 1.0f)
         game?.render()
         eglContextInitialized = true
     }

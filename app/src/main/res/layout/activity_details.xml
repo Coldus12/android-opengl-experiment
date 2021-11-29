@@ -10,7 +10,6 @@
         android:id="@+id/ivChar"
         android:layout_width="214dp"
         android:layout_height="227dp"
-        app:tint="@color/cardview_dark_background"
         app:layout_constraintBottom_toTopOf="@+id/gd2"
         app:layout_constraintEnd_toStartOf="@+id/gd"
         app:layout_constraintStart_toStartOf="@+id/gd"

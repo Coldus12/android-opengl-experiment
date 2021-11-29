@@ -50,7 +50,7 @@ class ShotgunPlayer(private var context: Context, startPosX: Float, startPosY: F
 
     // Everything related to shooting with a shotgun
     //----------------------------------------------------------------------------------------------
-    private val RPS = 2f // Number of bullets per second is called rounds per second. Huh
+    private val RPS = 1f // Number of bullets per second is called rounds per second. Huh
     private val timeBetweenRounds = (1000L / RPS).toLong()
     private val nrOfPellets = 20
     private val bulletTemplate = BulletData(
@@ -75,8 +75,8 @@ class ShotgunPlayer(private var context: Context, startPosX: Float, startPosY: F
         gameRef = game
     }
 
-    private var timeSinceLastShot = timeBetweenRounds + 1
-
+    //private var timeSinceLastShot = timeBetweenRounds + 1
+    private var lastTime = System.currentTimeMillis()
     /** If the player tried to shoot this is the function that is going to
      *  "spawn" in the bullets and progress them if necessary.
      *
@@ -90,9 +90,7 @@ class ShotgunPlayer(private var context: Context, startPosX: Float, startPosY: F
      *  @param timeInMs time since this function's last run
      * */
     private fun updateShotsFired(timeInMs: Long) {
-        timeSinceLastShot += timeInMs
-
-        if (timeSinceLastShot >= timeBetweenRounds && data.currentlyShooting) {
+        if (System.currentTimeMillis() - lastTime >= timeBetweenRounds && data.currentlyShooting) {
             data.currentlyShooting = false
 
             val bulletData = bulletTemplate.copy()
@@ -101,7 +99,7 @@ class ShotgunPlayer(private var context: Context, startPosX: Float, startPosY: F
             bulletData.direction = data.lookDirection - (PI / 6).toFloat()
             bulletData.exists = true
 
-            val nrOfShots = timeSinceLastShot / timeBetweenRounds
+            val nrOfShots = (System.currentTimeMillis() - lastTime) / timeBetweenRounds
 
             for (i in 0 .. nrOfShots) {
                 for (p in 0 .. nrOfPellets) {
@@ -114,7 +112,7 @@ class ShotgunPlayer(private var context: Context, startPosX: Float, startPosY: F
                 }
             }
 
-            timeSinceLastShot = 0L
+            lastTime = System.currentTimeMillis()
         }
 
         // fixes the random shooting even after not pressing the "trigger"

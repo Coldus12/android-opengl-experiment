@@ -29,7 +29,7 @@ abstract class Player(private var context: Context) : Creature() {
     lateinit var cam: Camera
         protected set
 
-    protected var speed = 10f
+    protected var speed = 6f
     lateinit var data: PlayerData
         protected set
 

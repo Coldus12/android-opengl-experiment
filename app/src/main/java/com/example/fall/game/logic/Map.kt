@@ -110,7 +110,7 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
                     binary[j * width + i]
                 )
 
-                when (random.nextInt(0,2)) {
+                when (random.nextInt(0,3)) {
                     0 -> {
                         if (block.passable) {
                             block.type = BlockTextureTypes.Floor1

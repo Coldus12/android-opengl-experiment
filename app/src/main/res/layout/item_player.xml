@@ -11,7 +11,6 @@
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:padding="2dp"
-        app:tint="@color/cardview_dark_background"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         tools:srcCompat="@tools:sample/avatars" />

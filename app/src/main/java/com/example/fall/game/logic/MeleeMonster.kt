@@ -20,14 +20,14 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
             posY,
             1f,
             R.drawable.cockroach,
-            MonsterStates.Standing,
+            MonsterStates.Moving,
             lookDirection,
             20,
             3,
             true
         )
 
-        speed = 5f
+        speed = 3f
 
         loadShader()
         loadAnimation()
@@ -51,7 +51,7 @@ class MeleeMonster(private var context: Context, posX: Float, posY: Float, lookD
             64
         )
 
-        animation.setTimes(10)
+        animation.setTimes(20)
     }
 
     // MonsterIndicator

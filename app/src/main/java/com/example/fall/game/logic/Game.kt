@@ -213,6 +213,8 @@ class Game(private var context: Context, type: PlayerType) : IGraphicalGame, Thr
             player.data.posX = map.getStartingX()
             player.data.posY = map.getStartingY()
             ready = true
+
+            player.move(this, 0.001f, 0.001f) //hack to fix rendering issues
         }
     }
 

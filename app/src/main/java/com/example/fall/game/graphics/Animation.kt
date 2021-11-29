@@ -1,6 +1,7 @@
 package com.example.fall.game.graphics
 
 import android.content.Context
+import android.util.Log
 import com.example.fall.game.logic.Updateable
 
 // Animation
@@ -60,7 +61,7 @@ class Animation(private var context: Context, private var resourceId: Int,
 
         if (currentTime <= 0L) {
             currentFrameNr++
-            if (currentFrameNr >= nrOfFrames - 1)
+            if (currentFrameNr > nrOfFrames - 1)
                 currentFrameNr = 0
 
             currentTime = timeList[currentFrameNr]

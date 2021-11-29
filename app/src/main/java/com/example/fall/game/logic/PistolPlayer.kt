@@ -66,7 +66,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
 
     //  Everything related to shooting with a pistol
     //----------------------------------------------------------------------------------------------
-    private val RPS = 6 // Number of bullets per second is called rounds per second. Huh
+    private val RPS = 3 // Number of bullets per second is called rounds per second. Huh
     private val timeBetweenRounds = 1000L / RPS
     private val bulletTemplate = BulletData(
         data.posX,
@@ -96,6 +96,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
     }
 
     private var timeSinceLastShot = timeBetweenRounds + 1
+    private var lastTime = System.currentTimeMillis()
 
     /** If the player tried to shoot this is the function that is going to
      *  "spawn" in the bullets and progress them if necessary.
@@ -110,9 +111,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
      *  @param timeInMs time since this function's last run
      * */
     private fun updateShotsFired(timeInMs: Long) {
-        timeSinceLastShot += timeInMs
-
-        if (timeSinceLastShot >= timeBetweenRounds && data.currentlyShooting) {
+        if (System.currentTimeMillis() - lastTime >= timeBetweenRounds && data.currentlyShooting) {
             data.currentlyShooting = false
 
             val bulletData = bulletTemplate.copy()
@@ -129,7 +128,7 @@ class PistolPlayer(private var context: Context, startPosX: Float, startPosY: Fl
                 gameRef.addBullet(bullet)
             }
 
-            timeSinceLastShot = 0L
+            lastTime = System.currentTimeMillis()
         }
     }
 
