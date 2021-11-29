@@ -76,7 +76,7 @@ class Game(private var context: Context, type: PlayerType) : IGraphicalGame, Thr
     private fun gameOver() {
         run = false
         val intent = Intent(context, GameOverActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         intent.putExtra("score", player.data.score)
         intent.putExtra("levels", player.data.nrOfLevelsReached)
 

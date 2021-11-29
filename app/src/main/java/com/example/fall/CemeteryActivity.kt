@@ -1,7 +1,9 @@
 package com.example.fall
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fall.data.DeadPlayersDB
 import com.example.fall.data.PlayerData
@@ -39,7 +41,27 @@ class CemeteryActivity : AppCompatActivity(), DeadPlayerAdapter.OnPlayerSelected
         }
     }
 
-    override fun onItemChanged(item: PlayerData) {
-        TODO("Not yet implemented")
+    override fun onPlayerSelected(item: PlayerData) {
+        Log.i("[LOOG]","HERE MOTHERFUCKER")
+        val intent = Intent(this@CemeteryActivity, DetailsActivity::class.java)
+
+        val name = when (item.modelResourceId) {
+            R.drawable.pistol_moving_sprite -> "Denzel"
+            R.drawable.shotgun_player -> "Justin"
+            else -> "Denzel"
+        }
+
+        val resId = when (item.modelResourceId) {
+            R.drawable.pistol_moving_sprite -> R.drawable.pistolie
+            R.drawable.shotgun_player -> R.drawable.shottie
+            else -> R.drawable.pistolie
+        }
+
+        intent.putExtra("name", name)
+        intent.putExtra("score", item.score)
+        intent.putExtra("levels", item.nrOfLevelsReached)
+        intent.putExtra("resId", resId)
+
+        startActivity(intent)
     }
 }

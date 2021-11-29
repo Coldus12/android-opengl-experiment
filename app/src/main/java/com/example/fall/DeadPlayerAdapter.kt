@@ -20,6 +20,7 @@ class DeadPlayerAdapter(private val listener: OnPlayerSelectedListener) :
 
     override fun onBindViewHolder(holder: DeadPlayerViewHolder, position: Int) {
         val item = items[position]
+        holder.bind(item)
 
         holder.binding.charName.text =
             when (item.modelResourceId) {
@@ -52,8 +53,20 @@ class DeadPlayerAdapter(private val listener: OnPlayerSelectedListener) :
     override fun getItemCount(): Int = items.size
 
     interface OnPlayerSelectedListener {
-        fun onItemChanged(item: PlayerData)
+        fun onPlayerSelected(item: PlayerData)
     }
 
-    inner class DeadPlayerViewHolder(val binding: ItemPlayerBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class DeadPlayerViewHolder(val binding: ItemPlayerBinding) : RecyclerView.ViewHolder(binding.root) {
+        private lateinit var item: PlayerData
+
+        init {
+            binding.root.setOnClickListener {
+                listener.onPlayerSelected(item)
+            }
+        }
+
+        fun bind(item: PlayerData) {
+            this.item = item
+        }
+    }
 }

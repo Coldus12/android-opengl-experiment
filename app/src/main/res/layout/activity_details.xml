@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailsActivity">
+
+    <ImageView
+        android:id="@+id/ivChar"
+        android:layout_width="214dp"
+        android:layout_height="227dp"
+        app:tint="@color/cardview_dark_background"
+        app:layout_constraintBottom_toTopOf="@+id/gd2"
+        app:layout_constraintEnd_toStartOf="@+id/gd"
+        app:layout_constraintStart_toStartOf="@+id/gd"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gd2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/char_name"
+        android:gravity="center"
+        android:textSize="28sp"
+        tools:text="Name: Llewellyn"
+        app:layout_constraintBottom_toTopOf="@+id/gd2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivChar" />
+
+    <TextView
+        android:id="@+id/tvScore"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/score"
+        android:gravity="center"
+        android:textSize="24sp"
+        tools:text="Score: A lot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gd2" />
+
+    <TextView
+        android:id="@+id/tvLevels"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/levels_reached"
+        android:gravity="center"
+        android:textSize="20sp"
+        tools:text="Levels reached: Quite a lot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvScore" />
+</androidx.constraintlayout.widget.ConstraintLayout>
