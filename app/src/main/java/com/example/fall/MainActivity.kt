@@ -3,6 +3,7 @@ package com.example.fall
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import com.example.fall.cemetery.CemeteryActivity
 import com.example.fall.databinding.ActivityMainBinding
 import com.example.fall.player_picker.ChoosePlayerActivity
@@ -25,7 +26,11 @@ class MainActivity : Activity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
+        val animation = AnimationUtils.loadAnimation(this, R.anim.animation)
+
         setContentView(binding.root)
+        binding.startButton.startAnimation(animation)
+        binding.cemeteryButton.startAnimation(animation)
         binding.startButton.setOnClickListener {
             startActivity(Intent(this, ChoosePlayerActivity::class.java))
         }

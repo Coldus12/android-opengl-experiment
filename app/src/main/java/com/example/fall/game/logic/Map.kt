@@ -52,11 +52,6 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
         for (i in 0 until 2*width*height/3) {
             binary[startY * width + startX] = true
 
-            if (i == width*height/2) {
-                initX = startX.toFloat()
-                initY = startY.toFloat()
-            }
-
             when (random.nextInt(0,4)) {
                 0 -> {
                     if (startX < width - 1) startX++
@@ -213,10 +208,10 @@ class Map(m: Int, n: Int, private var blockSize: Float = 1f) {
     }
 
     fun getStartingX(): Float {
-        return initX * blockSize
+        return passableBlocks[passableBlocks.size/2].posX
     }
 
     fun getStartingY(): Float {
-        return initY * blockSize
+        return passableBlocks[passableBlocks.size/2].posY
     }
 }
