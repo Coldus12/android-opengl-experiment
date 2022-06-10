@@ -9,11 +9,9 @@ Playable characters:
 - Justing - Cowboy with a shotgun (which also has infinite ammo)
 
 # Pictures
-![Character select](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/justin-char-select.png)
-![Justin playing](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/justin-playing.png)
-![Denzel shooting](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/denzel-shooting.png)
-![Game over](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/gameover.png)
-![Scoreboard](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/scoreboard.png)
+Character select          |  Justin playing           | Denzel Shooting   | Game over screen   | Scoreboard 
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+![](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/justin-char-select.png)  |  ![](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/justin-playing.png) | ![](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/denzel-shooting.png) | ![](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/gameover.png) | ![](https://github.com/Coldus12/android-opengl-experiment/blob/master/androidpics/scoreboard.png)
 
 # About the project
 This was my homework for the [Mobile- and Web-based Software](https://portal.vik.bme.hu/kepzes/targyak/VIAUAC00/en/ "Mobile- and Web-based Software") course.
